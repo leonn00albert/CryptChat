@@ -10,6 +10,7 @@ abstract class A_Model {
         $db = DB::getInstance();
           try {
               $stmt = $db->prepare("SELECT * FROM " . lcfirst(end($classname)) . "s WHERE id = :id");
+              
               $stmt->execute();
               $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
               $db = null;

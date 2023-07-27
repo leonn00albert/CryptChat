@@ -8,10 +8,10 @@ use Exception;
 
 class UserController
 {
-    static public function create()
+    static public function create($data)
     {
         try {
-            $data = PostJSON::read();
+           
             $sanatized = [
                 "username" => trim(htmlspecialchars($data["username"])),
                 "password" => trim(htmlspecialchars($data["password"])),
@@ -22,7 +22,7 @@ class UserController
                 "message" => "Created a new user",
                 "type" => "success",
             ]);
-            
+
         } catch (Exception $e) {
             http_response_code(400);
             echo json_encode([

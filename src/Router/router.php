@@ -2,9 +2,12 @@
 
 namespace App\Router;
 
+use App\Controllers\AuthController;
 use App\Controllers\ChatController;
 use App\Controllers\HomeController;
+use App\Controllers\MessageController;
 use App\Controllers\UserController;
+use App\Utils\Router\PostJSON;
 
 class Router
 {
@@ -45,6 +48,15 @@ class Router
                 case 'chat/index':
                     ChatController::index();
                     break;
+                case "message" :
+                    $data = [
+                        "sender" => "test",
+                        "receiver" => "tesdasd",
+                        "message" =>  "dasdsa",
+                    ];
+
+                    MessageController::create($data);
+                    break;
                 default:
                     echo '404 Not Found';
                     break;
@@ -52,9 +64,12 @@ class Router
         } else if ($matchedRoute && $_SERVER["REQUEST_METHOD"] == "POST") {
             switch ($matchedRoute) {
                 case 'user/create':
-                    UserController::create();
+                    UserController::create(PostJSON::read());
                     break;
- 
+                case 'auth/login':
+                    AuthController::login();
+                    break;
+
                 default:
                     echo '404 Not Found';
                     break;

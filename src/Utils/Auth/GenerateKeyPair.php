@@ -1,24 +1,25 @@
 <?php
 namespace App\Utils\Auth;
+
+use Exception;
+
 class generateKeyPair
 {
 
     static function create(): array
     {
-        $privateKeyConfig = array(
-            'private_key_bits' => 2048,
-            'private_key_type' => OPENSSL_KEYTYPE_RSA,
-        );
-
-        $privateKeyResource = openssl_pkey_new($privateKeyConfig);
-
-        openssl_pkey_export($privateKeyResource, $privateKey);
-
-        $publicKey = openssl_pkey_get_details($privateKeyResource)['key'];
-
-        return array(
-            'private_key' => $privateKey,
-            'public_key' => $publicKey,
-        );
+        if (extension_loaded('sodium')) {
+                $keyPair = sodium_crypto_box_keypair();
+        
+                $publicKey = bin2hex(sodium_crypto_box_publickey($keyPair));
+                $privateKey = bin2hex(sodium_crypto_box_secretkey($keyPair));
+                return array(
+                    'public_key' => $publicKey,
+                    'private_key' => $privateKey,
+                );
+     
+        } else {
+            echo "Sodium extension not available. Please make sure you are using PHP 7.2 or later.";
+        }
     }
 }

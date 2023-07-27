@@ -4,14 +4,18 @@ namespace App\Router;
 
 use App\Controllers\ChatController;
 use App\Controllers\HomeController;
-
-
+use App\Controllers\UserController;
 
 class Router
 {
     private static array $routes = [];
 
-    public static function add($route, $controllerAction)
+    public static function get($route, $controllerAction)
+    {
+        self::$routes[$route] = $controllerAction;
+    }
+
+    public static function post($route, $controllerAction)
     {
         self::$routes[$route] = $controllerAction;
     }
@@ -27,7 +31,7 @@ class Router
                 break;
             }
         }
-        if ($matchedRoute) {
+        if ($matchedRoute && $_SERVER["REQUEST_METHOD"] == "GET") {
             switch ($matchedRoute) {
                 case 'home':
                     HomeController::index();
@@ -41,6 +45,16 @@ class Router
                 case 'chat/index':
                     ChatController::index();
                     break;
+                default:
+                    echo '404 Not Found';
+                    break;
+            }
+        } else if ($matchedRoute && $_SERVER["REQUEST_METHOD"] == "POST") {
+            switch ($matchedRoute) {
+                case 'user/create':
+                    UserController::create();
+                    break;
+ 
                 default:
                     echo '404 Not Found';
                     break;

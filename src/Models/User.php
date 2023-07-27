@@ -17,10 +17,9 @@ class User extends A_Model
     private string $public_key; 
     private string $private_key; 
 
-    public function __construct($id, $username, $password)
+    public function __construct($username, $password)
     {
         $keypair = generateKeyPair::create();
-        $this->id = $id;
         $this->username = $username;
         $this->password = password_hash($password, PASSWORD_BCRYPT);
         $this->public_key = $keypair["public_key"];
@@ -31,6 +30,25 @@ class User extends A_Model
     {
         return password_verify($password, $this->password);
     }
-    
+    public function save() {
+        try {
+            $db = DB::getInstance();
+            $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+            $stmt = $db->prepare("INSERT INTO users (username, password, public_key, private_key) 
+                                  VALUES (:username, :password, :public_key, :private_key)");
+            $stmt->bindParam(':username', $this->username);
+            $stmt->bindParam(':password', $this->password);
+            $stmt->bindParam(':public_key', $this->public_key);
+            $stmt->bindParam(':private_key', $this->private_key);
+
+            $stmt->execute();
+            $db = null;
+            return true;
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+            return false;
+        }
+    }
 
 }

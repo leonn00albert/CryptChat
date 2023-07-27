@@ -7,4 +7,6 @@ Router::add('/login' ,'login');
 Router::add('/register' ,'register');
 Router::add('/' ,'home');
 
+
+Router::add('/chat' ,'chat/index');
 Router::start();

@@ -2,6 +2,7 @@
 
 namespace App\Router;
 
+use App\Controllers\ChatController;
 use App\Controllers\HomeController;
 
 
@@ -36,6 +37,9 @@ class Router
                     break;
                 case 'login':
                     HomeController::login();
+                    break;
+                case 'chat/index':
+                    ChatController::index();
                     break;
                 default:
                     echo '404 Not Found';

@@ -1,7 +1,7 @@
 <?php
 namespace App\Controllers;
 
-class HomeController
+class ChatController
 {
     static public function index()
     {

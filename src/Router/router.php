@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Router;
+
 use App\Controllers\HomeController;
 
 
@@ -15,7 +17,7 @@ class Router
 
     public static function start()
     {
-        $requestUrl = $_GET['url'] ?? '/';
+        $requestUrl = $_SERVER["REQUEST_URI"] ?? '/';
         $matchedRoute = null;
         foreach (self::$routes as $pattern => $action) {
             $pattern = str_replace('/', '\/', $pattern);
@@ -28,6 +30,12 @@ class Router
             switch ($matchedRoute) {
                 case 'home':
                     HomeController::index();
+                    break;
+                case 'register':
+                    HomeController::register();
+                    break;
+                case 'login':
+                    HomeController::login();
                     break;
                 default:
                     echo '404 Not Found';

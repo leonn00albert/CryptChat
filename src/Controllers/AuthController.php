@@ -16,6 +16,7 @@ class AuthController
             if($user->verifyPassword($data["password"])) {
                 $_SESSION["auth"] = true;
                 $_SESSION["user"] = $user;
+                $_SESSION["username"] = $data["username"];
                 echo json_encode([
                     "message" => "Succesfully logged in",
                     "type" => "success",

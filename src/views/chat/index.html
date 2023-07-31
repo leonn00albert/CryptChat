@@ -190,18 +190,17 @@
         var sharedKey = null;
         window.onload = async function () {
             try {
-                sharedKey = await getsharedKey();
-                getMessages()
+                await getMessages()
             } catch (error) {
                 console.error('Error:', error);
             }
         };
 
-        function renderMessage(message) {
+        function renderMessage(message, own=false) {
 
             const sanitizedMessage = DOMPurify.sanitize(message);
 
-            const htmlContent = `
+            let htmlContent = `
                 <div class="media w-50 mb-3"><img src="https://bootstrapious.com/i/snippets/sn-chat/avatar.svg"
                     alt="user" width="50" class="rounded-circle">
                     <div class="media-body ml-3">
@@ -213,16 +212,32 @@
                 </div>
                 `;
 
+
+        
+
+            if(own) {
+                 htmlContent = `
+                     <div class="media w-50 ml-auto mb-3">
+                        <div class="media-body">
+                            <div class="bg-primary rounded py-2 px-3 mb-2">
+                                <p class="text-small mb-0 text-white">${sanitizedMessage}</p>
+                            </div>
+                            <p class="small text-muted">12:00 PM | Aug 13</p>
+                        </div>
+                    </div>
+                `;
+
+            }
             return htmlContent;
         }
 
-        function getMessages() {
+        async function getMessages() {
             return fetch('/conversations/1')
                 .then(response => response.json())
                 .then(data => {
-                    const  key = JSON.parse(data.conversation.sharedKey).sharedKeyA;
+                    sharedKey = JSON.parse(data.conversation.sharedKey).sharedKeyA;
                     data.messages.forEach(element => {
-                        chatWindow.insertAdjacentHTML('beforeend', renderMessage(decryptMessage(element.message_text,key)));
+                        chatWindow.insertAdjacentHTML('beforeend', renderMessage(decryptMessage(element.message_text,sharedKey),element.own));
                     });
                 })
                 .catch(error => {
@@ -231,17 +246,19 @@
                 });
         }
 
-        function getsharedKey() {
-            return fetch('/conversation/keys/1')
+
+        async function getConversations() {
+            return fetch('/conversations')
                 .then(response => response.json())
                 .then(data => {
-                    return data.key;
+
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    throw error;
+                    throw error; 
                 });
         }
+
         function encryptMessage(message, sharedKey) {
             return CryptoJS.AES.encrypt(message, sharedKey).toString();
         }
@@ -272,7 +289,7 @@
                 .then(data => {
                     console.log(data);
                
-                    chatWindow.insertAdjacentHTML('beforeend', renderMessage(message));
+                    chatWindow.insertAdjacentHTML('beforeend', renderMessage(message,true));
                  
                 })
                 .catch(error => {

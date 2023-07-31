@@ -23,8 +23,16 @@ class ConversationController
     }
     static public function read()
     {
+    
         $conversation = Conversation::find(5)[0];
         $messages  = Message::findByConversationId($conversation["id"]);
+        $messages = array_map(function ($message) { 
+            if( $message->username === $_SESSION["username"]) {
+                $message->own = true;
+            }
+            return $message;
+        }
+        ,$messages);
         echo json_encode([
             "messages" =>  $messages,
             "conversation" =>  $conversation,

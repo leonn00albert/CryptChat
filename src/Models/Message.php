@@ -13,15 +13,18 @@ class Message extends A_Model
     public ?int $id = null; 
     public string $conversationId;
     public string $messageText;
+    public  $user;
+
     private string $sent_at;
     private bool $is_read = false;
 
 
     
-    public function __construct( string $conversationId=null,$messageText=null) {
-        if(isset($conversationId) && isset($messageText)) {
+    public function __construct( string $conversationId=null,$messageText=null,$user=null) {
+        if(isset($conversationId) && isset($messageText)&& isset($user)) {
             $this->conversationId = $conversationId;
             $this->messageText = $messageText;
+            $this->user = $user;
         }
     }
     public function save(): bool
@@ -30,8 +33,8 @@ class Message extends A_Model
         $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
         if (is_null($this->id)) {
-            $stmt = $db->prepare("INSERT INTO messages (conversation_id, message_text, sent_at, is_read) 
-                VALUES (:conversation_id, :message_text, :sent_at, :is_read)");
+            $stmt = $db->prepare("INSERT INTO messages (conversation_id, message_text, sent_at, is_read, username) 
+                VALUES (:conversation_id, :message_text, :sent_at, :is_read,:username)");
         } else {
             $stmt = $db->prepare("UPDATE messages 
                                   SET conversation_id = :conversation_id,
@@ -43,6 +46,7 @@ class Message extends A_Model
         $stmt->bindParam(':conversation_id', $this->conversationId);
         $stmt->bindParam(':message_text', $this->messageText);
         $stmt->bindParam(':sent_at', $date);
+        $stmt->bindParam(':username', $this->user);
         $stmt->bindParam(':is_read', $this->is_read);
     
         $stmt->execute();

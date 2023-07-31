@@ -15,7 +15,7 @@ class MessageController
                 "conversation_id" => trim(htmlspecialchars($data["conversation_id"])),
                 "message" => trim(htmlspecialchars($data["message"])),
             ];
-            $message = new Message( $sanatized["conversation_id"], $sanatized["message"]);
+            $message = new Message( $sanatized["conversation_id"], $sanatized["message"], $_SESSION["username"]);
             $message->save();
             echo json_encode([
                 "message" => "Created a new message",

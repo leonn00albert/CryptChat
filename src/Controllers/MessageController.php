@@ -12,11 +12,10 @@ class MessageController
     {
         try {
             $sanatized = [
-                "sender" => trim(htmlspecialchars($data["sender"])),
-                "receiver" => trim(htmlspecialchars($data["receiver"])),
+                "conversation_id" => trim(htmlspecialchars($data["conversation_id"])),
                 "message" => trim(htmlspecialchars($data["message"])),
             ];
-            $message = new Message($sanatized["sender"], $sanatized["receiver"], $sanatized["message"]);
+            $message = new Message( $sanatized["conversation_id"], $sanatized["message"]);
             $message->save();
             echo json_encode([
                 "message" => "Created a new message",

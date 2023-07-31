@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="/public/font-awesome.min.css" />
     <link rel="stylesheet" href="/public/bootstrap.min.css" />
     <link rel="stylesheet" href="/public/style.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 </head>
 
 <body>
@@ -15,14 +16,14 @@
         <div class="row rounded-lg overflow-hidden shadow">
             <div class="col-5 px-0">
                 <div class="bg-white">
-
                     <div class="bg-gray px-4 py-2 bg-light">
                         <p class="h5 mb-0 py-1">Recent</p>
                     </div>
 
                     <div class="messages-box">
                         <div class="list-group rounded-0">
-                            <a class="list-group-item list-group-item-action active text-white rounded-0">
+                            <a href="/chats/1"
+                                class="list-group-item list-group-item-action active text-white rounded-0">
                                 <div class="media"><img src="https://bootstrapious.com/i/snippets/sn-chat/avatar.svg"
                                         alt="user" width="50" class="rounded-circle">
                                     <div class="media-body ml-4">
@@ -64,7 +65,7 @@
                                 </div>
                             </a>
 
-                            <a href="#" class="list-group-item list-group-item-action list-group-item-light rounded-0">
+                            <a href="" class="list-group-item list-group-item-action list-group-item-light rounded-0">
                                 <div class="media"><img src="https://bootstrapious.com/i/snippets/sn-chat/avatar.svg"
                                         alt="user" width="50" class="rounded-circle">
                                     <div class="media-body ml-4">
@@ -143,49 +144,7 @@
             </div>
             <!-- Chat Box-->
             <div class="col-7 px-0">
-                <div class="px-4 py-5 chat-box bg-white">
-                    <!-- Sender Message-->
-                    <div class="media w-50 mb-3"><img src="https://bootstrapious.com/i/snippets/sn-chat/avatar.svg"
-                            alt="user" width="50" class="rounded-circle">
-                        <div class="media-body ml-3">
-                            <div class="bg-light rounded py-2 px-3 mb-2">
-                                <p class="text-small mb-0 text-muted">Test which is a new approach all solutions</p>
-                            </div>
-                            <p class="small text-muted">12:00 PM | Aug 13</p>
-                        </div>
-                    </div>
-
-                    <!-- Reciever Message-->
-                    <div class="media w-50 ml-auto mb-3">
-                        <div class="media-body">
-                            <div class="bg-primary rounded py-2 px-3 mb-2">
-                                <p class="text-small mb-0 text-white">Test which is a new approach to have all solutions
-                                </p>
-                            </div>
-                            <p class="small text-muted">12:00 PM | Aug 13</p>
-                        </div>
-                    </div>
-
-                    <!-- Sender Message-->
-                    <div class="media w-50 mb-3"><img src="https://bootstrapious.com/i/snippets/sn-chat/avatar.svg"
-                            alt="user" width="50" class="rounded-circle">
-                        <div class="media-body ml-3">
-                            <div class="bg-light rounded py-2 px-3 mb-2">
-                                <p class="text-small mb-0 text-muted">Test, which is a new approach to have</p>
-                            </div>
-                            <p class="small text-muted">12:00 PM | Aug 13</p>
-                        </div>
-                    </div>
-
-                    <!-- Reciever Message-->
-                    <div class="media w-50 ml-auto mb-3">
-                        <div class="media-body">
-                            <div class="bg-primary rounded py-2 px-3 mb-2">
-                                <p class="text-small mb-0 text-white">Apollo University, Delhi, India Test</p>
-                            </div>
-                            <p class="small text-muted">12:00 PM | Aug 13</p>
-                        </div>
-                    </div>
+                <div class="px-4 py-5 chat-box bg-white" id="chatWindow">
 
                     <!-- Sender Message-->
                     <div class="media w-50 mb-3"><img src="https://bootstrapious.com/i/snippets/sn-chat/avatar.svg"
@@ -210,21 +169,121 @@
 
                 </div>
 
-                <!-- Typing area -->
-                <form action="#" class="bg-light">
-                    <div class="input-group">
-                        <input type="text" placeholder="Type a message" aria-describedby="button-addon2"
-                            class="form-control rounded-0 border-0 py-4 bg-light">
-                        <div class="input-group-append">
-                            <button id="button-addon2" type="submit" class="btn btn-link"> <i
-                                    class="fa fa-paper-plane"></i></button>
-                        </div>
+
+                <div class="input-group">
+                    <input type="text" id="message" placeholder="Type a message" aria-describedby="button-addon2"
+                        class="form-control rounded-0 border-0 py-4 bg-light">
+                    <div class="input-group-append">
+                        <button id="button-addon2" type="submit" class="btn btn-link" onclick="sendMessage()"> <i
+                                class="fa fa-paper-plane"></i></button>
                     </div>
-                </form>
+                </div>
+
 
             </div>
         </div>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.3.2/purify.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
+    <script>
+        const chatWindow = document.getElementById('chatWindow');
+        var sharedKey = null;
+        window.onload = async function () {
+            try {
+                sharedKey = await getsharedKey();
+                getMessages()
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        };
+
+        function renderMessage(message) {
+
+            const sanitizedMessage = DOMPurify.sanitize(message);
+
+            const htmlContent = `
+                <div class="media w-50 mb-3"><img src="https://bootstrapious.com/i/snippets/sn-chat/avatar.svg"
+                    alt="user" width="50" class="rounded-circle">
+                    <div class="media-body ml-3">
+                         <div class="bg-light rounded py-2 px-3 mb-2">
+                        <p class="text-small mb-0 text-muted">${sanitizedMessage}</p>
+                        </div>
+                    <p class="small text-muted">12:00 PM | Aug 13</p>
+                </div>
+                </div>
+                `;
+
+            return htmlContent;
+        }
+
+        function getMessages() {
+            return fetch('/conversations/1')
+                .then(response => response.json())
+                .then(data => {
+                    const  key = JSON.parse(data.conversation.sharedKey).sharedKeyA;
+                    data.messages.forEach(element => {
+                        chatWindow.insertAdjacentHTML('beforeend', renderMessage(decryptMessage(element.message_text,key)));
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    throw error; 
+                });
+        }
+
+        function getsharedKey() {
+            return fetch('/conversation/keys/1')
+                .then(response => response.json())
+                .then(data => {
+                    return data.key;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    throw error;
+                });
+        }
+        function encryptMessage(message, sharedKey) {
+            return CryptoJS.AES.encrypt(message, sharedKey).toString();
+        }
+        function decryptMessage(message, sharedKey) {
+            try {
+                return CryptoJS.AES.decrypt(message, sharedKey).toString(CryptoJS.enc.Utf8);
+            } catch (error) {
+                console.error("Error while decrypting message:", error.message);
+                return null;
+            }
+            return CryptoJS.AES.DEDC(message, sharedKey).toString();
+        }
+        function sendMessage() {
+            let message = document.getElementById("message").value;
+            console.log(sharedKey)
+            const dataToSend = {
+                conversation_id: 5,
+                message: encryptMessage(message, sharedKey)
+            };
+            return fetch('/messages', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(dataToSend),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+               
+                    chatWindow.insertAdjacentHTML('beforeend', renderMessage(message));
+                 
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    throw error;
+                });
+
+        }
+
+    </script>
+
 </body>
 
 </html>

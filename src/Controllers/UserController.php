@@ -31,4 +31,13 @@ class UserController
             ]);
         }
     }
+
+    static public function key($id)
+    {
+        $user = User::find($id)[0];
+      
+        echo json_encode([
+            "key" =>  $user["private_key"],
+        ]);
+    }
 }

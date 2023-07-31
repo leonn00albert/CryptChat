@@ -14,13 +14,17 @@ class User extends A_Model
     private int $id;
     public string $username;
     public string $password;
-    private string $public_key;
-    private string $private_key;
+    public string $publicKey;
+    private string $privateKey = '';
 
-    public function __construct(string $username=null, string $password=null) {
+    public function __construct(string $username=null, string $password=null,string $publicKey=null, string $privateKey=null) {
         if(isset($username) && isset($password)) {
             $this->username = $username;
             $this->password = $password;
+        }
+        if(isset($publicKey) && isset($privateKey)) {
+            $this->publicKey = $publicKey;
+            $this->privateKey = $privateKey;
         }
     }
     public function verifyPassword($password)
@@ -29,26 +33,26 @@ class User extends A_Model
     }
     public function save()
     {
-        if (is_null($this->public_key) || is_null($this->private_key)) {
+        if (is_null($this->publicKey) || is_null($this->privateKey)) {
             $keypair = generateKeyPair::create();
-            $this->public_key = $keypair["public_key"];
-            $this->private_key = $keypair["private_key"];
+            $this->publicKey = $keypair["publicKey"];
+            $this->privateKey = $keypair["privateKey"];
         }
         $db = DB::getInstance();
         $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         if (is_null($this->id)) {
-            $stmt = $db->prepare("INSERT INTO users (username, password, public_key, private_key) 
-            VALUES (:username, :password, :public_key, :private_key)");
+            $stmt = $db->prepare("INSERT INTO users (username, password, publicKey, privateKey) 
+            VALUES (:username, :password, :publicKey, :privateKey)");
         } else {
             $stmt = $db->prepare("UPDATE users 
-                                  SET password = :password, public_key = :public_key, private_key = :private_key
+                                  SET password = :password, publicKey = :publicKey, privateKey = :privateKey
                                   WHERE username = :username");
         }
         $stmt->bindParam(':username', $this->username);
         $stmt->bindParam(':password', $this->password);
-        $stmt->bindParam(':public_key', $this->public_key);
-        $stmt->bindParam(':private_key', $this->private_key);
+        $stmt->bindParam(':publicKey', $this->publicKey);
+        $stmt->bindParam(':privateKey', $this->privateKey);
 
         $stmt->execute();
         $db = null;
@@ -70,5 +74,21 @@ class User extends A_Model
             echo "Error: " . $e->getMessage();
             return null;
         }
+    }
+
+    /**
+     * Get the value of publicKey
+     */ 
+    public function getPublicKey()
+    {
+        return $this->publicKey;
+    }
+
+    /**
+     * Get the value of privateKey
+     */ 
+    public function getPrivateKey()
+    {
+        return $this->privateKey;
     }
 }

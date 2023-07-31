@@ -70,7 +70,9 @@ class Router
             case 'get/key':
                 ConversationController::key(5);
                 break;
-
+            case 'users':
+                UserController::read();
+                break;
             case 'conversations/read':
                 ConversationController::read($matches['id']);
                 break;

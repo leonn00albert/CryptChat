@@ -50,7 +50,7 @@
                     username: username,
                     password: password
                 };
-                fetch('/users', {
+                fetch('/user', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -59,11 +59,12 @@
                 })
                     .then(response => {
                         if (!response.ok) {
-                            throw new Error('Network response was not ok');
+                            throw new Error('Could not create user');
                         }
                         return response.json();
                     })
                     .then(data => {
+                        console.log
                         let alert = document.getElementById("alertSuccess")
                         alert.style.display = "block";
                         alert.innerHTML = data.message;
@@ -75,7 +76,7 @@
                     .catch(error => {
                         let alert = document.getElementById("alertError")
                         alert.style.display = "block";
-                        alert.innerHTML = data.message;
+                        alert.innerHTML = error;
 
                     });
             }

@@ -31,7 +31,14 @@ class UserController
             ]);
         }
     }
-
+    static public function read()
+    {
+        $users = User::all();
+        echo json_encode([
+            "users" =>  $users 
+          
+        ]);
+    }
     static public function key($id)
     {
         $user = User::find($id)[0];

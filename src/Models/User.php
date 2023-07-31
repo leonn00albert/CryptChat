@@ -35,18 +35,18 @@ class User extends A_Model
     {
         if (is_null($this->publicKey) || is_null($this->privateKey)) {
             $keypair = generateKeyPair::create();
-            $this->publicKey = $keypair["publicKey"];
-            $this->privateKey = $keypair["privateKey"];
+            $this->publicKey = $keypair["public_key"];
+            $this->privateKey = $keypair["private_key"];
         }
         $db = DB::getInstance();
         $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         if (is_null($this->id)) {
-            $stmt = $db->prepare("INSERT INTO users (username, password, publicKey, privateKey) 
+            $stmt = $db->prepare("INSERT INTO users (username, password, public_key, private_key) 
             VALUES (:username, :password, :publicKey, :privateKey)");
         } else {
             $stmt = $db->prepare("UPDATE users 
-                                  SET password = :password, publicKey = :publicKey, privateKey = :privateKey
+                                  SET password = :password, public_key = :publicKey, private_key = :privateKey
                                   WHERE username = :username");
         }
         $stmt->bindParam(':username', $this->username);

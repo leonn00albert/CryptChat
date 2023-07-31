@@ -27,14 +27,7 @@ class MyChat implements MessageComponentInterface
 
     public function onMessage(ConnectionInterface $from, $msg)
     {
-        $package = json_decode($msg);
-
-        $data = [
-            "conversation_id" => $package->conversation_id,
-            "message" => $package->message
-        ];
-
-        MessageController::create($data);
+        
         $from->send("hello");
         foreach ($this->clients as $client) {
             if ($from != $client) { 

@@ -10,12 +10,13 @@ Router::get('/login' ,'login');
 Router::get('/register' ,'register');
 Router::get('/' ,'home');
 Router::get('/chats/{id}','chats/show');
+Router::get('/users','users');
 Router::get('/conversations/{id}','conversations/read');
 Router::get('/conversation/keys/1','get/key');
 Router::get('/users/keys/1','users/key');
 Router::get('/message' ,'message');
 Router::post('/messages' ,'messages/new');
-Router::post('/users' ,'user/create');
+Router::post('/user' ,'user/create');
 Router::post('/auth/login' ,'auth/login');
 
 if( isset($_SESSION["auth"]) && $_SESSION["auth"]) {

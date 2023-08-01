@@ -16,7 +16,7 @@ class UserController
                 "username" => trim(htmlspecialchars($data["username"])),
                 "password" => trim(htmlspecialchars($data["password"])),
             ];
-            $user = new User($sanatized["username"], $sanatized["password"]);
+            $user = new User($sanatized["username"], password_hash($sanatized["password"],PASSWORD_BCRYPT));
             $user->save();
             echo json_encode([
                 "message" => "Created a new user",

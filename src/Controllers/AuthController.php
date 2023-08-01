@@ -17,7 +17,8 @@ class AuthController
                 $_SESSION["auth"] = true;
                 $_SESSION["user"] = $user;
                 $_SESSION["username"] = $data["username"];
-                echo json_encode([
+                setcookie('username',$data["username"], 0, '/chat');               
+                 echo json_encode([
                     "message" => "Succesfully logged in",
                     "type" => "success",
                 ]);

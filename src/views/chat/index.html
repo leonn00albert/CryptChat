@@ -51,7 +51,7 @@
     <script>
 
         var lastTimestamp = 0;
-
+        var currentConversation;
 
 
 
@@ -79,7 +79,7 @@
         var sharedKey = null;
 
         function fetchMessages() {
-            fetch('/messages/latest/' + extractHashFromURL() + '?timestamp=' + lastTimestamp)
+            fetch('/messages/latest/' + currentConversation + '?timestamp=' + lastTimestamp)
                 .then(response => response.json())
                 .then(data => {
                     data.messages.forEach(message => {
@@ -93,9 +93,6 @@
         window.onload = async function () {
             try {
 
-                if (checkURLPattern()) {
-                    await getMessages();
-                }
                 await getUsers();
 
             } catch (error) {
@@ -106,7 +103,7 @@
         function renderUser(username) {
             const sanitizeUsername = DOMPurify.sanitize(username);
             let htmlContent = `
-                <a href="/new/${sanitizeUsername}" class="list-group-item list-group-item-action list-group-item-light rounded-0">
+                <a onclick="openChat('${username}')" id="chatItem-${username}"  class="list-group-item list-group-item-action list-group-item-light rounded-0">
                                 <div class="media"><img src="https://bootstrapious.com/i/snippets/sn-chat/avatar.svg"
                                         alt="user" width="50" class="rounded-circle">
                                     <div class="media-body ml-4">
@@ -158,18 +155,39 @@
             return htmlContent;
         }
 
-        async function getMessages() {
-            return fetch('/conversations/' + extractHashFromURL())
+            async function openChat(username) {
+
+            const chatItem = document.getElementById(`chatItem-${username}`);
+            chatWindow.innerHTML = "";
+            const activeElements = document.getElementsByClassName('active');
+            for (const element of activeElements) {
+                element.classList.remove('active');
+            }
+            lastTimestamp = 0;
+
+            const { hash, key } = await getConversationHashAndKey(username);
+            currentConversation  = hash;
+            sharedKey = key;
+            fetchMessages();
+            chatItem.classList.add('active');
+        }
+
+        async function getConversationHashAndKey(username) {
+            return fetch('/new/' + username)
                 .then(response => response.json())
                 .then(data => {
-                    sharedKey = JSON.parse(data.conversation.sharedKey).sharedKeyA;
-               
+                    return {
+                        hash : data.hash,
+                        key : data.sharedKey
+                    }
+            
                 })
                 .catch(error => {
                     console.error('Error:', error);
                     throw error;
                 });
         }
+
         async function getUsers() {
             return fetch('/users')
                 .then(response => response.json())
@@ -213,7 +231,7 @@
             let message = document.getElementById("message").value;
             console.log(sharedKey)
             const dataToSend = {
-                conversation_hash: extractHashFromURL(),
+                conversation_hash: currentConversation,
                 message: encryptMessage(message, sharedKey)
             };
             return fetch('/messages', {
@@ -234,7 +252,10 @@
                 });
 
         }
-        setInterval(fetchMessages, 3000);
+        if (currentConversation) {
+            setInterval(fetchMessages, 3000);
+
+        }
     </script>
 
 </body>

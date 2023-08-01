@@ -36,9 +36,15 @@ class ChatController
             $conversation = Conversation::findByHash($conversationHashA);
             User_Conversation::create(["user_id" => $sender->id,"conversation_id" => $conversation->id]); 
             User_Conversation::create(["user_id" => $receiver->id,"conversation_id" => $conversation->id]); 
-            header("location: /chats/" . $conversation->hash);
+            echo json_encode([
+                "hash" => $conversation->hash,
+                "sharedKey" => json_decode($conversation->sharedKey)->sharedKeyA
+            ]);
         }else {
-            header("location: /chats/" . $conversation->hash);
+            echo json_encode([
+                "hash" => $conversation->hash,
+                "sharedKey" => json_decode($conversation->sharedKey)->sharedKeyA
+            ]);
         }
     }
 }

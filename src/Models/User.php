@@ -11,11 +11,11 @@ use App\Utils\Auth\generateKeyPair;
 
 class User extends A_Model
 {
-    private int $id;
+    public ?int $id = null;
     public string $username;
     public string $password;
-    public string $publicKey;
-    private string $privateKey = '';
+    public ?string $publicKey = null;
+    private ?string $privateKey = null;
 
     public function __construct(string $username=null, string $password=null,string $publicKey=null, string $privateKey=null) {
         if(isset($username) && isset($password)) {

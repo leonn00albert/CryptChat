@@ -23,7 +23,6 @@ class AuthController
                 ]);
                 exit();
             }
-            print_r();
             throw new Exception("Invalid username or password");
         } catch (Exception $e) {
             http_response_code(400);

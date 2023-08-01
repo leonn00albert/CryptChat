@@ -21,11 +21,10 @@ class ConversationController
             "key" =>  json_decode($conversation["sharedKey"],true)["sharedKeyA"],
         ]);
     }
-    static public function read()
+    static public function read($hash)
     {
-    
-        $conversation = Conversation::find(5)[0];
-        $messages  = Message::findByConversationId($conversation["id"]);
+        $conversation = Conversation::findByHash($hash);
+        $messages  = Message::findByConversationId($conversation->id);
         $messages = array_map(function ($message) { 
             if( $message->username === $_SESSION["username"]) {
                 $message->own = true;
@@ -37,5 +36,8 @@ class ConversationController
             "messages" =>  $messages,
             "conversation" =>  $conversation,
         ]);
+
     }
+
+    
 }

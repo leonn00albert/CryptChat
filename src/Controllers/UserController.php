@@ -34,8 +34,15 @@ class UserController
     static public function read()
     {
         $users = User::all();
+
+        $usersWithoutCurrentUser = array_filter($users,fn($user) => $user["username"] != $_SESSION["username"]);
+        $usersWithoutCurrentUser = array_map(function ($user) {
+            return [
+                "username" => $user["username"]
+            ];
+        },$usersWithoutCurrentUser);
         echo json_encode([
-            "users" =>  $users 
+            "users" =>  [...$usersWithoutCurrentUser] 
           
         ]);
     }

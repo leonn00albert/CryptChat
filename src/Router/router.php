@@ -67,6 +67,9 @@ class Router
             case 'chat/index':
                 ChatController::index();
                 break;
+            case 'chat/new':
+                ChatController::new($matches['username']);
+                break;
             case 'get/key':
                 ConversationController::key(5);
                 break;
@@ -74,17 +77,16 @@ class Router
                 UserController::read();
                 break;
             case 'conversations/read':
-                ConversationController::read($matches['id']);
+                ConversationController::read($matches['hash']);
                 break;
             case 'users/key':
                 UserController::key(13);
                 break;
+                case 'messages/latest':
+                    MessageController::getMessageByTimestamp($matches['hash']);
+                    break;
             case 'chats/show':
-                if (isset($matches['id'])) {
-                    ChatController::show($matches['id']);
-                } else {
-                    echo '404 Not Found';
-                }
+                ChatController::show();
                 break;
             case 'message/{messageId}':
                 if (isset($matches['messageId'])) {

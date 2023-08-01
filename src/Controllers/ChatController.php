@@ -1,8 +1,10 @@
 <?php
+
 namespace App\Controllers;
 
 use App\Models\Conversation;
 use App\Models\User;
+use App\Models\User_Conversation;
 use App\Utils\Auth\GenerateSharedKey;
 
 class ChatController
@@ -12,21 +14,31 @@ class ChatController
         require_once(__DIR__ . "/../views/chat/index.html");
     }
 
-    static public function show($id)
+    static public function show()
     {
-        if(count(Conversation::find((int) $id)) == 0) {
-            $conversation = new Conversation();
-            $conversation->receiverName = trim(htmlspecialchars($_GET["receiverName"]));
-            $conversation->senderName = trim(htmlspecialchars($_GET["senderName"]));
-            $sender = User::findByUsername($_GET["senderName"]);
-            $receiver = User::findByUsername($_GET["senderName"]);
-            print_r($receiver->public_key);
-            $conversation->sharedKey = GenerateSharedKey::create($sender,$receiver);
-            print_r( $conversation->sharedKey);
-            $conversation->save();
-        } 
-            
-
         require_once(__DIR__ . "/../views/chat/index.html");
+    }
+
+    static public function new($username)
+    {
+        $receiver = User::findByUsername($username);
+        $conversationHashA = md5($username . $_SESSION["username"]);
+        $conversationHashB = md5($_SESSION["username"] . $username);
+        $conversation = Conversation::findByHash($conversationHashA, $conversationHashB);
+
+        if (is_null($conversation)) {
+            $conversation = new Conversation();
+            $sender = User::findByUsername($_SESSION["username"]);
+            $receiver = User::findByUsername($username);
+            $conversation->sharedKey = GenerateSharedKey::create($sender, $receiver);
+            $conversation->hash = $conversationHashA;
+            $conversation->save();
+            $conversation = Conversation::findByHash($conversationHashA);
+            User_Conversation::create(["user_id" => $sender->id,"conversation_id" => $conversation->id]); 
+            User_Conversation::create(["user_id" => $receiver->id,"conversation_id" => $conversation->id]); 
+            header("location: /chats/" . $conversation->hash);
+        }else {
+            header("location: /chats/" . $conversation->hash);
+        }
     }
 }

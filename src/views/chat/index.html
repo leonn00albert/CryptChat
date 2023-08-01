@@ -30,27 +30,6 @@
             <div class="col-7 px-0">
                 <div class="px-4 py-5 chat-box bg-white" id="chatWindow">
 
-                    <!-- Sender Message-->
-                    <div class="media w-50 mb-3"><img src="https://bootstrapious.com/i/snippets/sn-chat/avatar.svg"
-                            alt="user" width="50" class="rounded-circle">
-                        <div class="media-body ml-3">
-                            <div class="bg-light rounded py-2 px-3 mb-2">
-                                <p class="text-small mb-0 text-muted">Test, which is a new approach</p>
-                            </div>
-                            <p class="small text-muted">12:00 PM | Aug 13</p>
-                        </div>
-                    </div>
-
-                    <!-- Reciever Message-->
-                    <div class="media w-50 ml-auto mb-3">
-                        <div class="media-body">
-                            <div class="bg-primary rounded py-2 px-3 mb-2">
-                                <p class="text-small mb-0 text-white">Apollo University, Delhi, India Test</p>
-                            </div>
-                            <p class="small text-muted">12:00 PM | Aug 13</p>
-                        </div>
-                    </div>
-
                 </div>
 
 
@@ -70,13 +49,55 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.3.2/purify.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
     <script>
+
+        var lastTimestamp = 0;
+
+
+
+
         const chatWindow = document.getElementById('chatWindow');
         const conversationsWindow = document.getElementById('conversationsWindow');
+
+        function checkURLPattern() {
+            const currentURL = window.location.pathname;
+            const pattern = /^\/chats\/[a-zA-Z0-9]+$/;
+            const isMatched = pattern.test(currentURL);
+            return isMatched;
+        }
+
+        function extractHashFromURL() {
+            const currentURL = window.location.pathname;
+            const pattern = /^\/chats\/([a-zA-Z0-9]+)$/;
+            const match = currentURL.match(pattern);
+            if (match && match[1]) {
+                const hash = match[1];
+                return hash;
+            }
+            return null;
+        }
+
         var sharedKey = null;
+
+        function fetchMessages() {
+            fetch('/messages/latest/' + extractHashFromURL() + '?timestamp=' + lastTimestamp)
+                .then(response => response.json())
+                .then(data => {
+                    data.messages.forEach(message => {
+                        chatWindow.insertAdjacentHTML('beforeend', renderMessage(decryptMessage(message.message_text, sharedKey), message.own));
+
+                        lastTimestamp = message.timestamp
+                    });
+                })
+                .catch(error => console.error('Error fetching messages:', error));
+        }
         window.onload = async function () {
             try {
-                await getMessages();
-                await  getUsers();
+
+                if (checkURLPattern()) {
+                    await getMessages();
+                }
+                await getUsers();
+
             } catch (error) {
                 console.error('Error:', error);
             }
@@ -84,8 +105,8 @@
 
         function renderUser(username) {
             const sanitizeUsername = DOMPurify.sanitize(username);
-                let htmlContent = `
-                <a href="#" class="list-group-item list-group-item-action list-group-item-light rounded-0">
+            let htmlContent = `
+                <a href="/new/${sanitizeUsername}" class="list-group-item list-group-item-action list-group-item-light rounded-0">
                                 <div class="media"><img src="https://bootstrapious.com/i/snippets/sn-chat/avatar.svg"
                                         alt="user" width="50" class="rounded-circle">
                                     <div class="media-body ml-4">
@@ -99,10 +120,10 @@
                                 </div>
                             </a>
                 `
-                return htmlContent;
+            return htmlContent;
         }
 
-        function renderMessage(message, own=false) {
+        function renderMessage(message, own = false) {
 
             const sanitizedMessage = DOMPurify.sanitize(message);
 
@@ -119,10 +140,10 @@
                 `;
 
 
-        
 
-            if(own) {
-                 htmlContent = `
+
+            if (own) {
+                htmlContent = `
                      <div class="media w-50 ml-auto mb-3">
                         <div class="media-body">
                             <div class="bg-primary rounded py-2 px-3 mb-2">
@@ -138,17 +159,15 @@
         }
 
         async function getMessages() {
-            return fetch('/conversations/1')
+            return fetch('/conversations/' + extractHashFromURL())
                 .then(response => response.json())
                 .then(data => {
                     sharedKey = JSON.parse(data.conversation.sharedKey).sharedKeyA;
-                    data.messages.forEach(element => {
-                        chatWindow.insertAdjacentHTML('beforeend', renderMessage(decryptMessage(element.message_text,sharedKey),element.own));
-                    });
+               
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    throw error; 
+                    throw error;
                 });
         }
         async function getUsers() {
@@ -162,7 +181,7 @@
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    throw error; 
+                    throw error;
                 });
         }
 
@@ -174,7 +193,7 @@
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    throw error; 
+                    throw error;
                 });
         }
 
@@ -194,7 +213,7 @@
             let message = document.getElementById("message").value;
             console.log(sharedKey)
             const dataToSend = {
-                conversation_id: 5,
+                conversation_hash: extractHashFromURL(),
                 message: encryptMessage(message, sharedKey)
             };
             return fetch('/messages', {
@@ -206,10 +225,8 @@
             })
                 .then(response => response.json())
                 .then(data => {
-                    console.log(data);
-               
-                    chatWindow.insertAdjacentHTML('beforeend', renderMessage(message,true));
-                 
+
+
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -217,7 +234,7 @@
                 });
 
         }
-
+        setInterval(fetchMessages, 3000);
     </script>
 
 </body>

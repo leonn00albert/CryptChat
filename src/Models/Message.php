@@ -14,8 +14,8 @@ class Message extends A_Model
     public string $conversationId;
     public string $messageText;
     public  $user;
-
-    private string $sent_at;
+    public string $timestamp;
+    public string $sent_at;
     private bool $is_read = false;
 
 
@@ -33,8 +33,8 @@ class Message extends A_Model
         $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
         if (is_null($this->id)) {
-            $stmt = $db->prepare("INSERT INTO messages (conversation_id, message_text, sent_at, is_read, username) 
-                VALUES (:conversation_id, :message_text, :sent_at, :is_read,:username)");
+            $stmt = $db->prepare("INSERT INTO messages (conversation_id, message_text, sent_at, is_read, username, timestamp) 
+                VALUES (:conversation_id, :message_text, :sent_at, :is_read,:username, :timestamp)");
         } else {
             $stmt = $db->prepare("UPDATE messages 
                                   SET conversation_id = :conversation_id,
@@ -46,6 +46,8 @@ class Message extends A_Model
         $stmt->bindParam(':conversation_id', $this->conversationId);
         $stmt->bindParam(':message_text', $this->messageText);
         $stmt->bindParam(':sent_at', $date);
+        $time = time();
+        $stmt->bindParam(':timestamp', $time);
         $stmt->bindParam(':username', $this->user);
         $stmt->bindParam(':is_read', $this->is_read);
     
@@ -67,6 +69,24 @@ class Message extends A_Model
         } catch (PDOException $e) {
             echo "Error: " . $e->getMessage();
             return []; 
+        }
+    }
+
+    static public function findByConversationIdAndTimestamp($conversationId, $timestamp) {
+        try {
+            $db = DB::getInstance();
+       
+            $stmt = $db->prepare("SELECT * FROM messages WHERE conversation_id = :conversation_id AND timestamp > :timestamp ORDER BY sent_at ASC");
+            $stmt->bindParam(':conversation_id', $conversationId);
+            $stmt->bindParam(':timestamp', $timestamp);
+            $stmt->execute();
+            $stmt->setFetchMode(PDO::FETCH_CLASS, self::class);
+            $messages = $stmt->fetchAll();
+            $db = null;
+            return $messages;
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+            return [];
         }
     }
 }

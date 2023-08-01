@@ -88,14 +88,7 @@ class Router
             case 'chats/show':
                 ChatController::show();
                 break;
-            case 'message/{messageId}':
-                if (isset($matches['messageId'])) {
-                    $messageId = $matches['messageId'];
-                    MessageController::show($messageId);
-                } else {
-                    echo '404 Not Found';
-                }
-                break;
+
             default:
                 echo '404 Not Found';
                 break;

@@ -49,8 +49,8 @@ ws.onmessage = (event) => {
 
     if(data.channel === "notifications"){
         let message = JSON.parse(data.message);
-        const chatItem = document.getElementById("chatItem-" + message.username);
-        const chatText = document.getElementById("chatText-" + message.username);
+        let chatItem = document.getElementById("chatItem-" + message.username);
+        let chatText = document.getElementById("chatText-" + message.username);
 
         const notificationIcon = chatItem.querySelector(".notification-icon");
         if (!notificationIcon && (currentConversation !== message.conversation_hash)) {
@@ -144,11 +144,14 @@ function renderMessage(message, own = false) {
     return htmlContent;
 }
 
-
-
 async function openChat(username) {
     selectedUsername = username;
-    const chatItem = document.getElementById(`chatItem-${username}`);
+    let chatItem = document.getElementById("chatItem-" + username);
+    notificationIcon = chatItem.querySelector(".notification-icon");
+    if (notificationIcon) {
+            notificationIcon.remove();
+      }
+
     chatWindow.innerHTML = "";
     const activeElements = document.getElementsByClassName('active');
     for (const element of activeElements) {
@@ -232,7 +235,7 @@ function sendMessage() {
 
     ws.send(JSON.stringify({ action: 'sendToUser', username: selectedUsername, message: dataToSend }));
 
-    ws.send(JSON.stringify({ action: 'broadcast', channel: currentConversation, message: dataToSend }));
+   // ws.send(JSON.stringify({ action: 'broadcast', channel: currentConversation, message: dataToSend }));
 
     return fetch('/messages', {
         method: 'POST',

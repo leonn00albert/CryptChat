@@ -45,15 +45,25 @@ function extractHashFromURL() {
 
 var sharedKey = null;
 ws.onmessage = (event) => {
-    const message = JSON.parse(event.data);
-    if(message.channel === "notifications"){
-        console.log(message)
+    const data = JSON.parse(event.data);
+
+    if(data.channel === "notifications"){
+        let message = JSON.parse(data.message);
+        const chatItem = document.getElementById("chatItem-" + message.username);
+        const chatText = document.getElementById("chatText-" + message.username);
+
+        const notificationIcon = chatItem.querySelector(".notification-icon");
+        if (!notificationIcon && (currentConversation !== message.conversation_hash)) {
+            const notificationIconElement = document.createElement("span");
+            notificationIconElement.classList.add("notification-icon");
+            notificationIconElement.textContent = "🔴"; 
+            chatText.textContent = message.message;
+            chatItem.appendChild(notificationIconElement);
+        }
     }else {
-        let own = message.username == username ? true : false;
-        console.log(message.username);
-        console.log(username);
-        console.log(own);
-        chatWindow.insertAdjacentHTML('beforeend', renderMessage(decryptMessage(message.message, sharedKey),  own ));
+        let own = data.username == username ? true : false;
+   
+        chatWindow.insertAdjacentHTML('beforeend', renderMessage(decryptMessage(data.message, sharedKey),  own ));
     }
 
 
@@ -90,7 +100,7 @@ function renderUser(username) {
                                     <h6 class="mb-0">${sanitizeUsername}</h6><small class="small font-weight-bold">2
                                         Sep</small>
                                 </div>
-                                <p class="font-italic text-muted mb-0 text-small">Quis nostrud exercitation
+                                <p id="chatText-${username}" class="font-italic text-muted mb-0 text-small">Quis nostrud exercitation
                                     ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
                             </div>
                         </div>
@@ -210,7 +220,6 @@ function decryptMessage(message, sharedKey) {
         console.error("Error while decrypting message:", error.message);
         return null;
     }
-    return CryptoJS.AES.DEDC(message, sharedKey).toString();
 }
 function sendMessage() {
     let message = document.getElementById("message").value;

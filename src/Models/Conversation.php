@@ -2,22 +2,33 @@
 
 namespace App\Models;
 
+use App\Models\Interfaces\Persistable;
 use PDO;
 use App\Utils\DB;
 
 use App\Models\A_Model;
+use App\Models\Interfaces\FindableByHash;
 use PDOException;
 
-class Conversation extends A_Model
+class Conversation extends A_Model implements Persistable, FindableByHash
 {
+    /**
+     * @var ?int|null The unique identifier for the conversation. Null if not yet saved in the database.
+     */
     public ?int $id = null;
-    public string $senderName;
-    public string $receiverName;
+
+    /**
+     * @var ?string The hash value associated with the conversation.
+     */
     public ?string $hash;
-    public $sharedKey;
 
-
-
+     /**
+     * The shared key for the conversation.
+     *
+     * @var string The shared key value.
+     */
+    public string $sharedKey;
+    
     public function __construct(?string $hash = null, string $sharedKey = null)
     {
         if (isset($hash) && isset($sharedKey)) {
@@ -42,39 +53,27 @@ class Conversation extends A_Model
         }
         $sharedKeyJson = json_encode($this->sharedKey);
         $stmt->bindParam(':hash', $this->hash);
-        $stmt->bindParam(':sharedKey',  $sharedKeyJson ); 
+        $stmt->bindParam(':sharedKey',  $sharedKeyJson);
         $stmt->execute();
         $db = null;
-        return true;        
+        return true;
     }
 
-
-    public static function findByHash(string $hashA, string $hashB="") {
+    static public function findByHash(string $hashA, string $hashB = null): ?Conversation
+    {
         try {
             $db = DB::getInstance();
             $stmt = $db->prepare("SELECT * FROM conversations WHERE hash = :hashA OR hash = :hashB LIMIT 1;");
             $stmt->bindParam(':hashA', $hashA);
             $stmt->bindParam(':hashB', $hashB);
             $stmt->execute();
-            $stmt->setFetchMode(PDO::FETCH_CLASS, self::class);
+            $stmt->setFetchMode(PDO::FETCH_CLASS, Conversation::class);
             $conversation = $stmt->fetch();
             $db = null;
-            if($conversation) {
-                return $conversation;
-            }
-            return null;
-
+            return $conversation ?: null;
         } catch (PDOException $e) {
             echo "Error: " . $e->getMessage();
-            return null; 
+            return null;
         }
-    }
-
-    /**
-     * Get the value of receiverName
-     */
-    public function getReceiverName()
-    {
-        return $this->receiverName;
     }
 }

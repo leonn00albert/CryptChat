@@ -2,24 +2,51 @@
 
 namespace App\Models;
 
+use App\Models\Interfaces\FindableByConversationId;
 use PDO;
 use App\Utils\DB;
 use PDOException;
 use PDOStatement;
 use App\Models\A_Model;
+use App\Models\Interfaces\Persistable;
 
-class Message extends A_Model
+class Message extends A_Model implements FindableByConversationId , Persistable
 {
-    public ?int $id = null; 
+    /**
+     * @var int|null The ID of the message (nullable for new messages not yet saved to the database).
+     */
+    public ?int $id = null;
+
+    /**
+     * @var string The ID of the conversation that this message belongs to.
+     */
     public string $conversationId;
+
+    /**
+     * @var string The text content of the message.
+     */
     public string $messageText;
-    public  $user;
+
+    /**
+     * @var string The username of the user who sent the message.
+     */
+    public string $user;
+
+    /**
+     * @var string The timestamp of the message in Unix timestamp format (seconds since 1970-01-01 00:00:00).
+     */
     public string $timestamp;
+
+    /**
+     * @var string The formatted date and time when the message was sent (e.g., "2023-08-01 11:19:10").
+     */
     public string $sent_at;
+
+    /**
+     * @var bool Whether the message has been read or not (true for read, false for unread).
+     *           This property is private as it should be managed internally by the class.
+     */
     private bool $is_read = false;
-
-
-    
     public function __construct( string $conversationId=null,$messageText=null,$user=null) {
         if(isset($conversationId) && isset($messageText)&& isset($user)) {
             $this->conversationId = $conversationId;
@@ -56,22 +83,22 @@ class Message extends A_Model
         return true;
     }
 
-     static public function findByConversationId($id){
+    static public function findByConversationId(int $id): array
+    {
         try {
             $db = DB::getInstance();
             $stmt = $db->prepare("SELECT * FROM messages WHERE conversation_id = :conversation_id");
             $stmt->bindParam(':conversation_id', $id);
             $stmt->execute();
-            $stmt->setFetchMode(PDO::FETCH_CLASS, self::class);
+            $stmt->setFetchMode(PDO::FETCH_CLASS, Message::class);
             $messages = $stmt->fetchAll();
             $db = null;
             return $messages;
         } catch (PDOException $e) {
             echo "Error: " . $e->getMessage();
-            return []; 
+            return [];
         }
     }
-
     static public function findByConversationIdAndTimestamp($conversationId, $timestamp) {
         try {
             $db = DB::getInstance();

@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Interfaces\I_Model;
 use App\Utils\DB;
 use PDO;
 use PDOException;
 
-abstract class A_Model
+abstract class A_Model implements I_Model
 {
-    public static function find(int $id)
+    public static function find(int $id): array
     {
         $classname = explode("\\", static::class);
         $db = DB::getInstance();
@@ -18,7 +19,7 @@ abstract class A_Model
             $stmt->execute();
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $db = null;
-            return $result;
+            return $result ?? [];
         } catch (PDOException $e) {
             $_SESSION["alerts"]["message"] = $e->getMessage();
             $db = null;
@@ -35,7 +36,7 @@ abstract class A_Model
             $stmt->execute();
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $db = null;
-            return $result;
+            return $result ?? [];
         } catch (PDOException $e) {
             $_SESSION["alerts"]["message"] = $e->getMessage();
             $db = null;

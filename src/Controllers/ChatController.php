@@ -19,7 +19,7 @@ class ChatController
         require_once(__DIR__ . "/../views/chat/index.html");
     }
 
-    static public function new($username)
+    static public function new(string $username):void 
     {
         $receiver = User::findByUsername($username);
         $conversationHashA = md5($username . $_SESSION["username"]);

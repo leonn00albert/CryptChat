@@ -1,15 +1,16 @@
 <?php
-
 namespace App\Models;
 
+use App\Models\Interfaces\FindableByUsername;
 use PDO;
 use App\Utils\DB;
 use PDOException;
 use PDOStatement;
 use App\Models\A_Model;
+use App\Models\Interfaces\Persistable;
 use App\Utils\Auth\generateKeyPair;
 
-class User extends A_Model
+class User extends A_Model implements FindableByUsername, Persistable
 {
     public ?int $id = null;
     public string $username;
@@ -17,21 +18,22 @@ class User extends A_Model
     public ?string $publicKey = null;
     private ?string $privateKey = null;
 
-    public function __construct(string $username=null, string $password=null,string $publicKey=null, string $privateKey=null) {
-        if(isset($username) && isset($password)) {
+    public function __construct(string $username = null, string $password = null, string $publicKey = null, string $privateKey = null)
+    {
+        if (isset($username) && isset($password)) {
             $this->username = $username;
             $this->password = $password;
         }
-        if(isset($publicKey) && isset($privateKey)) {
+        if (isset($publicKey) && isset($privateKey)) {
             $this->publicKey = $publicKey;
             $this->privateKey = $privateKey;
         }
     }
-    public function verifyPassword($password)
+    public function verifyPassword(string $password)
     {
         return password_verify($password, $this->password);
     }
-    public function save()
+    public function save():bool
     {
         if (is_null($this->publicKey) || is_null($this->privateKey)) {
             $keypair = generateKeyPair::create();
@@ -59,17 +61,16 @@ class User extends A_Model
         return true;
     }
 
-    public static function findByUsername($username)
+    public static function findByUsername(string $username): ?User
     {
         try {
             $db = DB::getInstance();
             $stmt = $db->prepare("SELECT * FROM users WHERE username = :username");
-            $stmt->bindParam(':username', $username);
-            $stmt->execute();
-            $stmt->setFetchMode(PDO::FETCH_CLASS, self::class);
+            $stmt->execute([':username' => $username]);
+            $stmt->setFetchMode(PDO::FETCH_CLASS, User::class);
             $user = $stmt->fetch();
             $db = null;
-            return $user;
+            return $user ? $user : null;
         } catch (PDOException $e) {
             echo "Error: " . $e->getMessage();
             return null;
@@ -78,7 +79,7 @@ class User extends A_Model
 
     /**
      * Get the value of publicKey
-     */ 
+     */
     public function getPublicKey()
     {
         return $this->publicKey;
@@ -86,7 +87,7 @@ class User extends A_Model
 
     /**
      * Get the value of privateKey
-     */ 
+     */
     public function getPrivateKey()
     {
         return $this->privateKey;

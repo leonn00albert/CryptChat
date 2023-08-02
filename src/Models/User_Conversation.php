@@ -2,11 +2,8 @@
 
 namespace App\Models;
 
-use PDO;
-use App\Utils\DB;
 
 use App\Models\A_Model;
-use PDOException;
 
 class User_Conversation extends A_Model {
 

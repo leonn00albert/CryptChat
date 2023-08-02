@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-
 use App\Models\A_Model;
 
 class User_Conversation extends A_Model {

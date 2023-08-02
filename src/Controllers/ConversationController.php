@@ -13,7 +13,7 @@ class ConversationController
 
     }
 
-    static public function key($id)
+    static public function key(int $id): void
     {
         $conversation = Conversation::find($id)[0];
       
@@ -21,7 +21,7 @@ class ConversationController
             "key" =>  json_decode($conversation["sharedKey"],true)["sharedKeyA"],
         ]);
     }
-    static public function read($hash)
+    static public function read(string $hash): void
     {
         $conversation = Conversation::findByHash($hash);
         $messages  = Message::findByConversationId($conversation->id);

@@ -9,17 +9,18 @@ use App\Controllers\HomeController;
 use App\Controllers\MessageController;
 use App\Controllers\UserController;
 use App\Utils\Router\PostJSON;
+use App\Router\I_Router;
 
-class Router
+class Router implements I_Router
 {
     private static array $routes = [];
 
-    public static function get($route, $controllerAction)
+    public static function get(string $route, string $controllerAction)
     {
         self::$routes[$route] = $controllerAction;
     }
 
-    public static function post($route, $controllerAction)
+    public static function post(string $route, string $controllerAction)
     {
         self::$routes[$route] = $controllerAction;
     }
@@ -51,8 +52,13 @@ class Router
             echo '404 Not Found';
         }
     }
-
-    private static function handleGetRequest($route, $matches)
+    /**
+     * Handle a GET request and execute the corresponding controller action.
+     *
+     * @param string $route The matched route.
+     * @param array $matches The named placeholders in the route pattern.
+     */
+    private static function handleGetRequest(string $route, array $matches)
     {
         switch ($route) {
             case 'home':
@@ -82,9 +88,9 @@ class Router
             case 'users/key':
                 UserController::key(13);
                 break;
-                case 'messages/latest':
-                    MessageController::getMessageByTimestamp($matches['hash']);
-                    break;
+            case 'messages/latest':
+                MessageController::getMessageByTimestamp($matches['hash']);
+                break;
             case 'chats/show':
                 ChatController::show();
                 break;
@@ -94,8 +100,13 @@ class Router
                 break;
         }
     }
-
-    private static function handlePostRequest($route, $matches)
+    /**
+     * Handle a POST request and execute the corresponding controller action.
+     *
+     * @param string $route The matched route.
+     * @param array $matches The named placeholders in the route pattern.
+     */
+    private static function handlePostRequest(string $route, array $matches)
     {
         switch ($route) {
             case 'user/create':

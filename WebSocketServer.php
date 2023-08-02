@@ -10,7 +10,7 @@ use Ratchet\WebSocket\WsServer;
 class SubscriptionServer implements MessageComponentInterface
 {
     protected $subscribers = [];
-
+    protected $users = [];
     public function onOpen(ConnectionInterface $conn)
     {
         echo "New connection! ({$conn->resourceId})\n";
@@ -28,6 +28,28 @@ class SubscriptionServer implements MessageComponentInterface
         $conn->close();
     }
 
+    public function register(ConnectionInterface $conn, string $username)
+    {
+        $this->users[$username] = $conn;
+        echo "New register : " . $username;
+    }
+
+    public function sendToUser(ConnectionInterface $conn, string $username, array $message)
+    {
+        foreach ($this->users as $user) {
+            if ($user !== $conn) {
+                if ($user->resourceId === $this->users[$username]->resourceId) {
+                    $data = [
+                        "message" => json_encode($message),
+                        "channel" => "notifications",
+                    ];
+                    $user->send(json_encode($data));
+                }
+            }
+        }
+    }
+
+
     public function onMessage(ConnectionInterface $conn, $message)
     {
         $messageData = json_decode($message, true);
@@ -35,9 +57,15 @@ class SubscriptionServer implements MessageComponentInterface
         if (isset($messageData['action'])) {
             switch ($messageData['action']) {
                 case 'broadcast':
-                    $this->broadcast($messageData['channel'], json_encode($messageData["message"]));
+                    $this->broadcast($messageData['channel'], $messageData["message"]);
+                    break;
+                case 'register':
+                    $this->register($conn, $messageData["username"]);
                     break;
 
+                case 'sendToUser':
+                    $this->sendToUser($conn, $messageData["username"], $messageData["message"]);
+                    break;
                 case 'subscribe':
                     $this->subscribe($conn, $messageData['channel']);
                     break;
@@ -84,7 +112,8 @@ class SubscriptionServer implements MessageComponentInterface
     {
         if (isset($this->subscribers[$channel])) {
             foreach ($this->subscribers[$channel] as $conn) {
-                $conn->send($message);
+                $message["channel"] = $channel;
+                $conn->send(json_encode($message));
             }
         }
     }

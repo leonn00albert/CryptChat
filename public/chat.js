@@ -1,6 +1,7 @@
 const ws = new WebSocket('ws://192.168.1.100:8080');
 
 
+selectedUsername = "";
 var lastTimestamp = 0;
 var currentConversation;
 function getCookie(name) {
@@ -17,6 +18,10 @@ function getCookie(name) {
   }
   
   var username = getCookie('username');
+
+  ws.onopen = (event) => {
+    ws.send(JSON.stringify({ action: 'register', username: username}));
+};
 const chatWindow = document.getElementById('chatWindow');
 const conversationsWindow = document.getElementById('conversationsWindow');
 
@@ -41,11 +46,16 @@ function extractHashFromURL() {
 var sharedKey = null;
 ws.onmessage = (event) => {
     const message = JSON.parse(event.data);
-    let own = message.username == username ? true : false;
-    console.log(message.username);
-    console.log(username);
-    console.log(own);
-    chatWindow.insertAdjacentHTML('beforeend', renderMessage(decryptMessage(message.message, sharedKey),  own ));
+    if(message.channel === "notifications"){
+        console.log(message)
+    }else {
+        let own = message.username == username ? true : false;
+        console.log(message.username);
+        console.log(username);
+        console.log(own);
+        chatWindow.insertAdjacentHTML('beforeend', renderMessage(decryptMessage(message.message, sharedKey),  own ));
+    }
+
 
 };
 function fetchMessages() {
@@ -127,7 +137,7 @@ function renderMessage(message, own = false) {
 
 
 async function openChat(username) {
-
+    selectedUsername = username;
     const chatItem = document.getElementById(`chatItem-${username}`);
     chatWindow.innerHTML = "";
     const activeElements = document.getElementsByClassName('active');
@@ -210,6 +220,8 @@ function sendMessage() {
         message: encryptMessage(message, sharedKey),
         username : username
     };
+
+    ws.send(JSON.stringify({ action: 'sendToUser', username: selectedUsername, message: dataToSend }));
 
     ws.send(JSON.stringify({ action: 'broadcast', channel: currentConversation, message: dataToSend }));
 

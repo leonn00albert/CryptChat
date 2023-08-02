@@ -33,7 +33,7 @@ class MessageController
         }
     }
 
-    static public function getMessageByTimestamp($url) {
+    static public function getMessageByTimestamp(string $url): void {
    
 
         $parsedUrl = parse_url($url);

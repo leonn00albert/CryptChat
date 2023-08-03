@@ -2,8 +2,9 @@
 
 namespace App\Utils\Auth;
 
+use App\Models\User;
 use App\Models\User_Conversation;
-use AuthException;
+use App\Utils\Auth\AuthException;
 
 class Authentication
 {
@@ -16,6 +17,21 @@ class Authentication
     {
         if (!isset($_SESSION["username"])) {
             throw new AuthException("Authentication required. Please log in.", 401);
+        }
+    }
+    /**
+     * Check if the current user is the specified user.
+     *
+     * @param int $id The user ID to compare with the current user.
+     *
+     * @throws AuthException If the current user is not the specified user.
+     */
+
+    static public function checkIfUser(int $id): void
+    {
+        $user = User::findByUsername($_SESSION["username"]);
+        if ($user->id !== $id) {
+            throw new AuthException("You are note the right user", 401);
         }
     }
 
@@ -34,7 +50,7 @@ class Authentication
         foreach ($usersInConversation as $user) {
             if ($user->username === $_SESSION["username"]) {
                 $inConversation = true;
-                break; 
+                break;
             }
         }
 

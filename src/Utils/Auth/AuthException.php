@@ -1,4 +1,10 @@
 <?php
+
+namespace App\Utils\Auth;
+use Exception;
+use Throwable;
+
+
 class AuthException extends Exception
 {
     public function __construct($message = "", $code = 0, Throwable $previous = null)

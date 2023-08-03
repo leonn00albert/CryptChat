@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/docs/4.0/assets/img/favicons/favicon.ico">
+
+    <title>Signin Template for Bootstrap</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/sign-in/">
+
+    <!-- Bootstrap core CSS -->
+    <link href="/public/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/public/signin.css" rel="stylesheet">
+</head>
+
+<body class="text-center" style="background: #1a1818;">
+
+
+        <div class="container">
+            <div class="alert alert-success" role="alert" style="display: none;" id="alertSuccess">
+            </div>
+            <div class="alert alert-danger" role="alert" style="display: none;" id="alertError">
+            </div>
+
+
+            <form class="form-signin" onsubmit="submitForm(event)">
+                <img src="/public/cryptchat.png" width="150">
+                <h1 class="h3 mb-3 font-weight-normal" style="color: white;" >Please Register</h1>
+                <label for="inputEmail" class="sr-only">Username</label>
+                <input type="text" id="inputUsername" class="form-control" placeholder="Username" required autofocus>
+                <label for="inputPassword" class="sr-only">Password</label>
+                <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+                <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
+                <p class="mt-5 mb-3 text-muted">&copy; 2023</p>
+            </form>
+        </div>
+        <script>
+            function submitForm(event) {
+                event.preventDefault();
+                const username = document.getElementById('inputUsername').value;
+                const password = document.getElementById('inputPassword').value;
+                const data = {
+                    username: username,
+                    password: password
+                };
+                fetch('/user', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Could not create user');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log
+                        let alert = document.getElementById("alertSuccess")
+                        alert.style.display = "block";
+                        alert.innerHTML = data.message;
+                        setTimeout(function () {
+                            window.location.href = "/login";
+
+                        }, 1000)
+                    })
+                    .catch(error => {
+                        let alert = document.getElementById("alertError")
+                        alert.style.display = "block";
+                        alert.innerHTML = error;
+
+                    });
+            }
+        </script>
+    </body>
+
+</html>

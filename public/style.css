@@ -47,3 +47,13 @@ body {
     color: #999;
   }
   
+
+  .list-group-item-light.list-group-item-action.active {
+    color: #fff;
+    background-color: #007bff;
+    border-color: #818182;
+  }
+
+  .list-group-item-action.active div div p   {
+    color: white !important;
+  }

@@ -3,7 +3,6 @@
 namespace App\Controllers;
 
 use App\Models\User;
-use App\Utils\Router\PostJSON;
 use Exception;
 
 class UserController

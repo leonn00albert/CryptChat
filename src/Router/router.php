@@ -8,7 +8,7 @@ use App\Controllers\ConversationController;
 use App\Controllers\HomeController;
 use App\Controllers\MessageController;
 use App\Controllers\UserController;
-use App\Utils\Router\PostJSON;
+use App\Utils\Router\JSON;
 use App\Router\I_Router;
 
 class Router implements I_Router
@@ -110,11 +110,11 @@ class Router implements I_Router
     {
         switch ($route) {
             case 'user/create':
-                UserController::create(PostJSON::read());
+                UserController::create(JSON::read());
                 break;
 
             case 'messages/new':
-                MessageController::create(PostJSON::read());
+                MessageController::create(JSON::read());
                 break;
             case 'auth/login':
                 AuthController::login();

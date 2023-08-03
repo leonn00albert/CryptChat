@@ -4,7 +4,9 @@ namespace App\Controllers;
 
 use App\Models\Conversation;
 use App\Models\Message;
-use App\Utils\Router\PostJSON;
+use App\Utils\Auth\Authentication;
+use App\Utils\Router\JSON;
+use AuthException;
 use Exception;
 
 class MessageController
@@ -12,48 +14,41 @@ class MessageController
     static public function create($data)
     {
         try {
+            Authentication::checkIfLoggedIn();
             $sanatized = [
                 "conversation_hash" => trim(htmlspecialchars($data["conversation_hash"])),
                 "message" => trim(htmlspecialchars($data["message"])),
             ];
             $conversation = Conversation::findByHash($sanatized["conversation_hash"]);
-            $message = new Message( $conversation->id, $sanatized["message"], $_SESSION["username"]);
+            Authentication::isUserMemberOfConversation($conversation);
+            $message = new Message($conversation->id, $sanatized["message"], $_SESSION["username"]);
             $message->save();
-            echo json_encode([
-                "message" => "Created a new message",
-                "type" => "success",
-            ]);
-
+            JSON::response(JSON::HTTP_STATUS_OK, "success", "Created a new message.");
+        } catch (AuthException $e) {
+            JSON::response($e->getCode(), "error", $e->getMessage());
         } catch (Exception $e) {
-            http_response_code(400);
-            echo json_encode([
-                "message" => "Failed to create message: " . $e->getMessage(),
-                "type" => "error",
-            ]);
+            JSON::response(JSON::HTTP_BAD_REQUEST, "error", $e->getMessage());
         }
     }
 
-    static public function getMessageByTimestamp(string $url): void {
-   
-
+    static public function getMessageByTimestamp(string $url): void
+    {
         $parsedUrl = parse_url($url);
         $hash = $parsedUrl['path'];
         parse_str($parsedUrl['query'], $queryParams);
-
-
-            $conversation = Conversation::findByHash($hash);
-            $messages  = Message::findByConversationIdAndTimeStamp($conversation->id,$queryParams["timestamp"]);
-            $messages = array_map(function ($message) { 
-                if( $message->username === $_SESSION["username"]) {
+        $conversation = Conversation::findByHash($hash);
+        $messages  = Message::findByConversationIdAndTimeStamp($conversation->id, $queryParams["timestamp"]);
+        $messages = array_map(
+            function ($message) {
+                if ($message->username === $_SESSION["username"]) {
                     $message->own = true;
                 }
                 return $message;
-            }
-            ,$messages);
-            echo json_encode([
-                "messages" =>  $messages,
-            ]);
-
-    
-    }   
+            },
+            $messages
+        );
+        echo json_encode([
+            "messages" =>  $messages,
+        ]);
+    }
 }

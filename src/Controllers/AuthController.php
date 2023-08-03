@@ -3,7 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\User;
-use App\Utils\Router\PostJSON;
+use App\Utils\Router\JSON;
 use Exception;
 
 class AuthController
@@ -11,7 +11,7 @@ class AuthController
     static public function login() :void
     {
         try {
-            $data = PostJSON::read();
+            $data = JSON::read();
             $user = User::findByUsername($data["username"]);
             if($user->verifyPassword($data["password"])) {
                 $_SESSION["auth"] = true;

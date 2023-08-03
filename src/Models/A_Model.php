@@ -53,12 +53,12 @@ abstract class A_Model implements I_Model
         $placeholders = ':' . implode(', :', array_keys($data));
         $sql = "INSERT INTO $table ($columns) VALUES ($placeholders)";
         $stmt = $db->prepare($sql);
-
         foreach ($data as $key => $value) {
-            $stmt->bindParam(':' . $key, $value, PDO::PARAM_STR);
+            $stmt->bindValue(':' . $key, $value, PDO::PARAM_STR);
         }
-
+        
         if ($stmt->execute()) {
+            
         } else {
             throw new PDOException("Something went wrong");
         }

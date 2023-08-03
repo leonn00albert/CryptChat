@@ -235,7 +235,7 @@ function sendMessage() {
 
     ws.send(JSON.stringify({ action: 'sendToUser', username: selectedUsername, message: dataToSend }));
 
-   // ws.send(JSON.stringify({ action: 'broadcast', channel: currentConversation, message: dataToSend }));
+   ws.send(JSON.stringify({ action: 'broadcast', channel: currentConversation, message: dataToSend }));
 
     return fetch('/messages', {
         method: 'POST',

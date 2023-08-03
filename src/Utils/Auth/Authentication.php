@@ -31,7 +31,7 @@ class Authentication
     {
         $user = User::findByUsername($_SESSION["username"]);
         if ($user->id !== $id) {
-            throw new AuthException("You are note the right user", 401);
+            throw new AuthException("You are not the right user", 401);
         }
     }
 

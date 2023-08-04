@@ -18,6 +18,11 @@ class ChatController
         require_once(__DIR__ . "/../views/chat/index.html");
     }
 
+    static public function settings()
+    {
+        require_once(__DIR__ . "/../views/chat/settings.html");
+    }
+
     static public function show()
     {
         require_once(__DIR__ . "/../views/chat/index.html");

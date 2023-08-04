@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CryptChat</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/public/bootstrap.min.css" />
+    <link rel="stylesheet" href="/public/style.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+</head>
+
+<body>
+    <div class="container py-5 px-4">
+        <div class="row rounded-lg overflow-hidden shadow">
+            <div class="col-5 px-0">
+                <div class="bg-white">
+                    <div class="bg-gray px-4 py-2 bg-light">
+                        <p class="h5 mb-0 py-1"><a href="/logout"><i class="fa fa-sign-out" aria-hidden="true"></i></a><a href="/settings"><i class="fa fa-cog" aria-hidden="true"></i></a></p>
+                    </div>
+
+                    <div class="messages-box">
+                        <div class="col-md-6 offset-md-3">
+                            <h2>User Settings</h2>
+                            <form>
+                                <div class="form-group">
+                                    <label for="profileImage">Profile Image</label>
+                                    <input type="file" class="form-control-file" id="profileImage" accept="image/*">
+                                    <small class="form-text text-muted">Upload a profile image (JPG, PNG, or GIF).</small>
+                                </div>
+                                <div class="form-group">
+                                    <label for="currentPassword">Current Password</label>
+                                    <input type="password" class="form-control" id="currentPassword" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="newPassword">New Password</label>
+                                    <input type="password" class="form-control" id="newPassword" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="confirmPassword">Confirm New Password</label>
+                                    <input type="password" class="form-control" id="confirmPassword" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Chat Box-->
+            <div class="col-7 px-0">
+                <div class="px-4 py-5 chat-box bg-white" id="chatWindow">
+
+                </div>
+
+
+                <div class="input-group">
+                    <input type="text" id="message" placeholder="Type a message" aria-describedby="button-addon2"
+                        class="form-control rounded-0 border-0 py-4 bg-light">
+                    <div class="input-group-append">
+                        <button id="button-addon2" type="submit" class="btn btn-link" onclick="sendMessage()"> <i
+                                class="fa fa-paper-plane"></i></button>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.3.2/purify.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
+    <script src="/public/chat.js">  </script>
+
+
+
+  
+
+</body>
+
+</html>

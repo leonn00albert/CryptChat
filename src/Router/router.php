@@ -70,8 +70,14 @@ class Router implements I_Router
             case 'login':
                 HomeController::login();
                 break;
+            case 'logout':
+                AuthController::logout();
+                break;
             case 'chat/index':
                 ChatController::index();
+                break;
+            case 'settings':
+                ChatController::settings();
                 break;
             case 'chat/new':
                 ChatController::new($matches['username']);

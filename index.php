@@ -7,12 +7,14 @@ use App\Utils\Socket\WebSocketServer;
 
 
 Router::get('/login', 'login');
+Router::get('/logout', 'logout');
 Router::get('/register', 'register');
 Router::get('/', 'home');
 Router::post('/auth/login', 'auth/login');
 
 if (isset($_SESSION["auth"]) && $_SESSION["auth"]) {
     Router::get('/chat', 'chat/index');
+    Router::get('/settings', 'settings');
     Router::get('/chats/{hash}', 'chats/show');
     Router::get('/new/{username}', 'chat/new');
     Router::get('/users', 'users');

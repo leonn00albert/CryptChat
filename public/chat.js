@@ -72,6 +72,10 @@ function fetchMessages() {
     fetch('/messages/latest/' + currentConversation + '?timestamp=' + lastTimestamp)
         .then(response => response.json())
         .then(data => {
+            let messagesLoading = document.getElementById("messagesLoading");
+            messagesLoading.style.visibility = "hidden";
+            chatWindow.innerHTML = "";
+
             data.messages.forEach(message => {
                 chatWindow.insertAdjacentHTML('beforeend', renderMessage(decryptMessage(message.message_text, sharedKey), message.own));
                 lastTimestamp = message.timestamp
@@ -147,7 +151,8 @@ function renderMessage(message, own = false) {
 
 async function openChat(username) {
     document.getElementById("button-addon2").disabled = false;
-
+    const messagesLoading = document.getElementById("messagesLoading");
+    messagesLoading.style.visibility = "visible";
     document.getElementById("message").disabled = false;
     selectedUsername = username;
     let chatItem = document.getElementById("chatItem-" + username);
@@ -156,7 +161,6 @@ async function openChat(username) {
         notificationIcon.remove();
     }
 
-    chatWindow.innerHTML = "";
     const activeElements = document.getElementsByClassName('active');
     for (const element of activeElements) {
         element.classList.remove('active');
@@ -191,9 +195,11 @@ async function getConversationHashAndKey(username) {
 }
 
 async function getUsers() {
+    const userLoading = document.getElementById("usersLoading");
     return fetch('/users')
         .then(response => response.json())
         .then(data => {
+            userLoading.style.visibility = "hidden";
             data.users.forEach(user => {
                 conversationsWindow.insertAdjacentHTML('beforeend', renderUser(user.username));
 

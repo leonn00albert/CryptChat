@@ -29,7 +29,7 @@ class UserController
         try {
             Authentication::checkIfLoggedIn();
             echo json_encode([
-                "users" =>  User::removeCurrentUser(User::all())
+                "users" =>  [...User::removeCurrentUser(User::all())]
 
             ]);
         } catch (AuthException | Exception $e) {
@@ -56,7 +56,7 @@ class UserController
         try {
             Authentication::checkIfLoggedIn();
             echo json_encode([
-                "users" =>  User::removeCurrentUser(User::search("username", $query)),
+                "users" =>  [...User::removeCurrentUser(User::search("username", $query))],
             ]);
         } catch (AuthException | Exception $e) {
             JSON::response(JSON::HTTP_BAD_REQUEST, "error", $e->getMessage());

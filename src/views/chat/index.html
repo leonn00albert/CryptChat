@@ -22,8 +22,12 @@
                                     aria-hidden="true"></i></a></p>
                     </div>
                     <div class="messages-box">
-                        <input type="text" class="user-search" id="searchInput" onchange="searchUser()" />
-
+                        <input placeholder="Search for users: " type="text" class="user-search form-control rounded-0 border-0 py-4 " id="searchInput" onchange="searchUser()" />
+                        <div class="d-flex justify-content-center" id="usersLoading">
+                            <div class="spinner-border" role="status">
+                              <span class="sr-only">Loading...</span>
+                            </div>
+                          </div>
                         <div class="list-group rounded-0" id="conversationsWindow">
                         </div>
                     </div>
@@ -31,11 +35,18 @@
             </div>
             <!-- Chat Box-->
             <div class="col-7 px-0">
+                <div class="d-flex justify-content-center" id="messagesLoading">
+                    <div class="spinner-border" role="status">
+                      <span class="sr-only">Loading...</span>
+                    </div>
+                  </div>
                 <div class="px-4 py-5 chat-box bg-white" id="chatWindow">
+              
                 </div>
                 <div class="input-group">
                     <input type="text" id="message" placeholder="Type a message" aria-describedby="button-addon2"
                         class="form-control rounded-0 border-0 py-4 bg-light">
+                   
                     <div class="input-group-append">
                         <button id="button-addon2" type="submit" class="btn btn-link" onclick="sendMessage()"> <i
                                 class="fa fa-paper-plane"></i></button>
@@ -46,10 +57,16 @@
             </div>
         </div>
     </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.3.2/purify.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
+    <script src="/public/chat.js">  </script>
     <script>
         function searchUser() {
+            const userLoading = document.getElementById("usersLoading");
             const searchInput = document.getElementById("searchInput");
             const searchQuery = searchInput.value;
+            userLoading.style.visibility = "visible";
             fetch("/users/search", {
                 method: "POST",
                 headers: {
@@ -64,17 +81,18 @@
                     return response.json();
                 })
                 .then((data) => {
-                    console.log(data);
+                    userLoading.style.visibility = "hidden";
+                    conversationsWindow.innerHTML = "";
+                    data.users.forEach(user => {
+                conversationsWindow.insertAdjacentHTML('beforeend', renderUser(user.username));
+
+            });
                 })
                 .catch((error) => {
                     console.error("Fetch error:", error);
                 });
         }
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.3.2/purify.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
-    <script src="/public/chat.js">  </script>
-
 
 
 

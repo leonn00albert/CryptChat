@@ -17,10 +17,13 @@
             <div class="col-5 px-0">
                 <div class="bg-white">
                     <div class="bg-gray px-4 py-2 bg-light">
-                        <p class="h5 mb-0 py-1"><a href="/logout"><i class="fa fa-sign-out" aria-hidden="true"></i></a><a href="/settings"><i class="fa fa-cog" aria-hidden="true"></i></a></p>
+                        <p class="h5 mb-0 py-1"><a href="/logout"><i class="fa fa-sign-out"
+                                    aria-hidden="true"></i></a><a href="/settings"><i class="fa fa-cog"
+                                    aria-hidden="true"></i></a></p>
                     </div>
-
                     <div class="messages-box">
+                        <input type="text" class="user-search" id="searchInput" onchange="searchUser()" />
+
                         <div class="list-group rounded-0" id="conversationsWindow">
                         </div>
                     </div>
@@ -29,10 +32,7 @@
             <!-- Chat Box-->
             <div class="col-7 px-0">
                 <div class="px-4 py-5 chat-box bg-white" id="chatWindow">
-
                 </div>
-
-
                 <div class="input-group">
                     <input type="text" id="message" placeholder="Type a message" aria-describedby="button-addon2"
                         class="form-control rounded-0 border-0 py-4 bg-light">
@@ -46,13 +46,38 @@
             </div>
         </div>
     </div>
+    <script>
+        function searchUser() {
+            const searchInput = document.getElementById("searchInput");
+            const searchQuery = searchInput.value;
+            fetch("/users/search", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json", 
+                },
+                body: JSON.stringify({ query: searchQuery }), 
+            })
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error("Network response was not ok");
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    console.log(data);
+                })
+                .catch((error) => {
+                    console.error("Fetch error:", error);
+                });
+        }
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.3.2/purify.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
     <script src="/public/chat.js">  </script>
 
 
 
-  
+
 
 </body>
 

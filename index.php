@@ -25,6 +25,8 @@ if (isset($_SESSION["auth"]) && $_SESSION["auth"]) {
     Router::get('/messages/latest/{hash}', 'messages/latest');
     Router::post('/messages', 'messages/new');
     Router::post('/user', 'user/create');
+    Router::post("/users/search","users/search");
+
 }
 
 

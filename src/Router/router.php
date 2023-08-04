@@ -31,7 +31,6 @@ class Router implements I_Router
         $matchedRoute = null;
 
         foreach (self::$routes as $pattern => $action) {
-            // Convert route pattern to a valid regex with placeholders
             $pattern = str_replace('/', '\/', $pattern);
             $pattern = preg_replace('/{(\w+)}/', '(?<$1>[^\/]+)', $pattern);
             if (preg_match("/^{$pattern}$/", $requestUrl, $matches)) {
@@ -85,6 +84,7 @@ class Router implements I_Router
             case 'get/key':
                 ConversationController::key(5);
                 break;
+
             case 'users':
                 UserController::read();
                 break;
@@ -124,6 +124,9 @@ class Router implements I_Router
                 break;
             case 'auth/login':
                 AuthController::login();
+                break;
+            case 'users/search':
+                UserController::search(JSON::read()["query"]);
                 break;
             default:
                 echo '404 Not Found';

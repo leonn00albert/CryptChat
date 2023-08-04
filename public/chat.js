@@ -8,19 +8,19 @@ function getCookie(name) {
     var cookieValue = "";
     var cookies = document.cookie.split(';');
     for (var i = 0; i < cookies.length; i++) {
-      var cookie = cookies[i].trim();
-      if (cookie.startsWith(name + "=")) {
-        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-        break;
-      }
+        var cookie = cookies[i].trim();
+        if (cookie.startsWith(name + "=")) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+        }
     }
     return cookieValue;
-  }
-  
-  var username = getCookie('username');
+}
 
-  ws.onopen = (event) => {
-    ws.send(JSON.stringify({ action: 'register', username: username}));
+var username = getCookie('username');
+
+ws.onopen = (event) => {
+    ws.send(JSON.stringify({ action: 'register', username: username }));
 };
 const chatWindow = document.getElementById('chatWindow');
 const conversationsWindow = document.getElementById('conversationsWindow');
@@ -47,7 +47,7 @@ var sharedKey = null;
 ws.onmessage = (event) => {
     const data = JSON.parse(event.data);
 
-    if(data.channel === "notifications"){
+    if (data.channel === "notifications") {
         let message = JSON.parse(data.message);
         let chatItem = document.getElementById("chatItem-" + message.username);
         let chatText = document.getElementById("chatText-" + message.username);
@@ -56,14 +56,14 @@ ws.onmessage = (event) => {
         if (!notificationIcon && (currentConversation !== message.conversation_hash)) {
             const notificationIconElement = document.createElement("span");
             notificationIconElement.classList.add("notification-icon");
-            notificationIconElement.textContent = "🔴"; 
+            notificationIconElement.textContent = "🔴";
             chatText.textContent = message.message;
             chatItem.appendChild(notificationIconElement);
         }
-    }else {
+    } else {
         let own = data.username == username ? true : false;
-   
-        chatWindow.insertAdjacentHTML('beforeend', renderMessage(decryptMessage(data.message, sharedKey),  own ));
+
+        chatWindow.insertAdjacentHTML('beforeend', renderMessage(decryptMessage(data.message, sharedKey), own));
     }
 
 
@@ -81,7 +81,8 @@ function fetchMessages() {
 }
 window.onload = async function () {
     try {
-
+        document.getElementById("button-addon2").disabled = true;
+        document.getElementById("message").disabled = true;
         await getUsers();
 
     } catch (error) {
@@ -145,12 +146,15 @@ function renderMessage(message, own = false) {
 }
 
 async function openChat(username) {
+    document.getElementById("button-addon2").disabled = false;
+
+    document.getElementById("message").disabled = false;
     selectedUsername = username;
     let chatItem = document.getElementById("chatItem-" + username);
     notificationIcon = chatItem.querySelector(".notification-icon");
     if (notificationIcon) {
-            notificationIcon.remove();
-      }
+        notificationIcon.remove();
+    }
 
     chatWindow.innerHTML = "";
     const activeElements = document.getElementsByClassName('active');
@@ -165,7 +169,7 @@ async function openChat(username) {
     sharedKey = key;
     fetchMessages();
 
-     ws.send(JSON.stringify({ action: 'subscribe', channel: currentConversation }));
+    ws.send(JSON.stringify({ action: 'subscribe', channel: currentConversation }));
 
     chatItem.classList.add('active');
 }
@@ -230,12 +234,12 @@ function sendMessage() {
     const dataToSend = {
         conversation_hash: currentConversation,
         message: encryptMessage(message, sharedKey),
-        username : username
+        username: username
     };
 
     ws.send(JSON.stringify({ action: 'sendToUser', username: selectedUsername, message: dataToSend }));
 
-   ws.send(JSON.stringify({ action: 'broadcast', channel: currentConversation, message: dataToSend }));
+    ws.send(JSON.stringify({ action: 'broadcast', channel: currentConversation, message: dataToSend }));
 
     return fetch('/messages', {
         method: 'POST',
@@ -246,12 +250,12 @@ function sendMessage() {
     })
         .then(response => response.json())
         .then(data => {
-         
+
         })
         .catch(error => {
             console.error('Error:', error);
             throw error;
         });
-        
+
 
 }

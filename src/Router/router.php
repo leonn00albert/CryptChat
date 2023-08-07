@@ -130,6 +130,9 @@ class Router implements I_Router
             case 'users/search':
                 UserController::search(JSON::read()["query"]);
                 break;
+                case 'settings/password':
+                    Settings::passwordChange(JSON::read());
+                    break;
             case 'upload/image':
                 try {
                     $profilePicture = new Upload();

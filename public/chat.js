@@ -1,4 +1,4 @@
-const ws = new WebSocket('ws://192.168.1.100:8080');
+const ws = new WebSocket('ws://192.168.1.101:8080');
 
 
 selectedUsername = "";
@@ -32,6 +32,20 @@ function checkURLPattern() {
     return isMatched;
 }
 
+function formatCustomDate(isoDateString) {
+    const date = new Date(isoDateString);
+  
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const seconds = String(date.getSeconds()).padStart(2, "0");
+  
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  }
+  
+
 function extractHashFromURL() {
     const currentURL = window.location.pathname;
     const pattern = /^\/chats\/([a-zA-Z0-9]+)$/;
@@ -62,8 +76,8 @@ ws.onmessage = (event) => {
         }
     } else {
         let own = data.username == username ? true : false;
-
-        chatWindow.insertAdjacentHTML('beforeend', renderMessage(decryptMessage(data.message, sharedKey), own));
+        console.log(data.sent_at);
+        chatWindow.insertAdjacentHTML('beforeend', renderMessage(decryptMessage(data.message, sharedKey) ,formatCustomDate(data.sent_at), own));
     }
 
 
@@ -77,7 +91,8 @@ function fetchMessages() {
             chatWindow.innerHTML = "";
 
             data.messages.forEach(message => {
-                chatWindow.insertAdjacentHTML('beforeend', renderMessage(decryptMessage(message.message_text, sharedKey), message.own));
+                console.log(message.sent_at);
+                chatWindow.insertAdjacentHTML('beforeend', renderMessage(decryptMessage(message.message_text, sharedKey),message.sent_at, message.own));
                 lastTimestamp = message.timestamp
             });
         })
@@ -102,11 +117,9 @@ function renderUser(username) {
                                 alt="user" width="50" class="rounded-circle">
                             <div class="media-body ml-4">
                                 <div class="d-flex align-items-center justify-content-between mb-1">
-                                    <h6 class="mb-0">${sanitizeUsername}</h6><small class="small font-weight-bold">2
-                                        Sep</small>
+                                    <h6 class="mb-0">${sanitizeUsername}</h6><small class="small font-weight-bold"></small>
                                 </div>
-                                <p id="chatText-${username}" class="font-italic text-muted mb-0 text-small">Quis nostrud exercitation
-                                    ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                   
                             </div>
                         </div>
                     </a>
@@ -114,7 +127,7 @@ function renderUser(username) {
     return htmlContent;
 }
 
-function renderMessage(message, own = false) {
+function renderMessage(message,dateTime, own = false) {
 
     const sanitizedMessage = DOMPurify.sanitize(message);
 
@@ -125,7 +138,7 @@ function renderMessage(message, own = false) {
                  <div class="bg-light rounded py-2 px-3 mb-2">
                 <p class="text-small mb-0 text-muted">${sanitizedMessage}</p>
                 </div>
-            <p class="small text-muted">12:00 PM | Aug 13</p>
+            <p class="small text-muted">${formatNiceDate(dateTime)}</p>
         </div>
         </div>
         `;
@@ -140,7 +153,7 @@ function renderMessage(message, own = false) {
                     <div class="bg-primary rounded py-2 px-3 mb-2">
                         <p class="text-small mb-0 text-white">${sanitizedMessage}</p>
                     </div>
-                    <p class="small text-muted">12:00 PM | Aug 13</p>
+                    <p class="small text-muted">${formatNiceDate(dateTime)}</p>
                 </div>
             </div>
         `;
@@ -240,7 +253,8 @@ function sendMessage() {
     const dataToSend = {
         conversation_hash: currentConversation,
         message: encryptMessage(message, sharedKey),
-        username: username
+        username: username,
+        sent_at: new Date().toISOString()
     };
 
     ws.send(JSON.stringify({ action: 'sendToUser', username: selectedUsername, message: dataToSend }));
@@ -265,3 +279,20 @@ function sendMessage() {
 
 
 }
+
+function formatNiceDate(dateString) {
+    const date = new Date(dateString);
+  
+    const options = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      second: "numeric",
+      hour12: true,
+    };
+  
+    return date.toLocaleString(undefined, options);
+  }
+  

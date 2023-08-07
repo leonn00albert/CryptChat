@@ -58,6 +58,15 @@ input::placeholder {
   color: white !important;
 }
 
+.list-group-item-light.list-group-item-action {
+  cursor: pointer;
+}
+.list-group-item-light.list-group-item-action.active:hover .username-field {
+  color: white;
+
+}
+
+
 #usersLoading {
   top: 40%;
   position: relative;

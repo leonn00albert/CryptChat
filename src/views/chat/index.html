@@ -17,9 +17,11 @@
             <div class="col-5 px-0">
                 <div class="bg-white">
                     <div class="bg-gray px-4 py-2 bg-light">
-                        <p class="h5 mb-0 py-1"><a href="/logout"><i class="fa fa-sign-out"
-                                    aria-hidden="true"></i></a><a href="/settings"><i class="fa fa-cog"
-                                    aria-hidden="true"></i></a></p>
+                        <p class="h5 mb-0 py-1">
+                            <a href="/logout"><i class="fa fa-sign-out" aria-hidden="true"></i></a>
+                            <a href="/settings"><i class="fa fa-cog" aria-hidden="true"></i></a>
+                            <a href="/chat"><i class="fa fa-comments" aria-hidden="true"></i></a>
+                        </p>
                     </div>
                     <div class="messages-box">
                         <input placeholder="Search for users: " type="text" class="user-search form-control rounded-0 border-0 py-4 " id="searchInput" onchange="searchUser()" />
@@ -44,10 +46,10 @@
               
                 </div>
                 <div class="input-group">
-                    <input type="text" id="message" placeholder="Type a message" aria-describedby="button-addon2"
+                    <input type="text" id="message" placeholder="Type a message " aria-describedby="button-addon2"
                         class="form-control rounded-0 border-0 py-4 bg-light">
                    
-                    <div class="input-group-append">
+                    <div class="input-group-append" style="background: white;">
                         <button id="button-addon2" type="submit" class="btn btn-link" onclick="sendMessage()"> <i
                                 class="fa fa-paper-plane"></i></button>
                     </div>

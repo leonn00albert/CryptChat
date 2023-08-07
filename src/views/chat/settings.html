@@ -17,18 +17,27 @@
             <div class="col-5 px-0">
                 <div class="bg-white">
                     <div class="bg-gray px-4 py-2 bg-light">
-                        <p class="h5 mb-0 py-1"><a href="/logout"><i class="fa fa-sign-out" aria-hidden="true"></i></a><a href="/settings"><i class="fa fa-cog" aria-hidden="true"></i></a></p>
+                        <p class="h5 mb-0 py-1">
+                            <a href="/logout"><i class="fa fa-sign-out" aria-hidden="true"></i></a>
+                            <a href="/settings"><i class="fa fa-cog" aria-hidden="true"></i></a>
+                            <a href="/chat"><i class="fa fa-comments" aria-hidden="true"></i></a>
+                        </p>
                     </div>
 
                     <div class="messages-box">
                         <div class="col-md-6 offset-md-3">
                             <h2>User Settings</h2>
+            
                             <form>
                                 <div class="form-group">
                                     <label for="profileImage">Profile Image</label>
-                                    <input type="file" class="form-control-file" id="profileImage" accept="image/*">
-                                    <small class="form-text text-muted">Upload a profile image (JPG, PNG, or GIF).</small>
+                                    <input  name="profileImage" type="file" class="form-control-file" id="profileImage" accept="image/jpeg">
+                                    <small class="form-text text-muted">Upload a profile image (JPG)</small>
                                 </div>
+                            </form>
+                            <button id="uploadButton">Upload Image</button>
+
+                            <form>
                                 <div class="form-group">
                                     <label for="currentPassword">Current Password</label>
                                     <input type="password" class="form-control" id="currentPassword" required>
@@ -67,13 +76,38 @@
             </div>
         </div>
     </div>
+    <script>
+        document.getElementById('uploadButton').addEventListener('click', () => {
+            const input = document.getElementById('profileImage');
+            if (input.files.length === 0) {
+                console.log('No file selected.');
+                return;
+            }
+
+            const file = input.files[0];
+            const formData = new FormData();
+            formData.append('profileImage', file);
+
+            fetch('/upload/image', {
+                method: 'POST',
+                body: formData,
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log('File uploaded successfully:', data);
+                })
+                .catch((error) => {
+                    console.error('Error uploading file:', error);
+                });
+        });
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.3.2/purify.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
     <script src="/public/chat.js">  </script>
 
 
 
-  
+
 
 </body>
 

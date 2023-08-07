@@ -26,6 +26,7 @@ if (isset($_SESSION["auth"]) && $_SESSION["auth"]) {
     Router::post('/messages', 'messages/new');
     Router::post('/user', 'user/create');
     Router::post("/users/search","users/search");
+    Router::post("/upload/image", "upload/image");
 
 }
 

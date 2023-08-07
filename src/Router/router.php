@@ -10,6 +10,8 @@ use App\Controllers\MessageController;
 use App\Controllers\UserController;
 use App\Utils\Router\JSON;
 use App\Router\I_Router;
+use App\Utils\Upload;
+use Exception;
 
 class Router implements I_Router
 {
@@ -127,6 +129,15 @@ class Router implements I_Router
                 break;
             case 'users/search':
                 UserController::search(JSON::read()["query"]);
+                break;
+            case 'upload/image':
+                try {
+                    $profilePicture = new Upload();
+                    $profilePicture->upload();
+                } catch (Exception $e) {
+                    JSON::response(JSON::HTTP_BAD_REQUEST, "error", $e->getMessage());
+                }
+
                 break;
             default:
                 echo '404 Not Found';

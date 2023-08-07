@@ -110,30 +110,31 @@ window.onload = async function () {
 };
 
 function renderUser(username) {
+    const profileImage = "/public/images/"+ username + ".jpg";
     const sanitizeUsername = DOMPurify.sanitize(username);
     let htmlContent = `
         <a onclick="openChat('${username}')" id="chatItem-${username}"  class="list-group-item list-group-item-action list-group-item-light rounded-0">
-                        <div class="media"><img src="https://bootstrapious.com/i/snippets/sn-chat/avatar.svg"
-                                alt="user" width="50" class="rounded-circle">
+                        <div class="media"><img src="${profileImage}"
+                                alt="user" width="50"   height="50" class="rounded-circle">
                             <div class="media-body ml-4">
                                 <div class="d-flex align-items-center justify-content-between mb-1">
-                                    <h6 class="mb-0">${sanitizeUsername}</h6><small class="small font-weight-bold"></small>
+                                    <h6 class="mb-0 username-field">${sanitizeUsername}</h6><small class="small font-weight-bold"></small>
                                 </div>
-                   
                             </div>
                         </div>
                     </a>
         `
     return htmlContent;
 }
-
+  
 function renderMessage(message,dateTime, own = false) {
+    const profileImage = "/public/images/"+ selectedUsername + ".jpg";
 
     const sanitizedMessage = DOMPurify.sanitize(message);
 
     let htmlContent = `
-        <div class="media w-50 mb-3"><img src="https://bootstrapious.com/i/snippets/sn-chat/avatar.svg"
-            alt="user" width="50" class="rounded-circle">
+        <div class="media w-50 mb-3"><img src="${profileImage}"
+        alt="user" width="50"   height="50" class="rounded-circle">
             <div class="media-body ml-3">
                  <div class="bg-light rounded py-2 px-3 mb-2">
                 <p class="text-small mb-0 text-muted">${sanitizedMessage}</p>

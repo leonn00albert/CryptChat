@@ -27,6 +27,25 @@ abstract class A_Model implements I_Model
         }
     }
 
+    public static function search(string $column, string $query): array
+    {
+        $classname = explode("\\", static::class);
+        $db = DB::getInstance();
+        try {
+            $stmt = $db->prepare("SELECT * FROM " . lcfirst(end($classname)) . "s WHERE $column LIKE :query");
+            $queryWithWildcards = '%' . $query . '%';
+            $stmt->bindParam(':query', $queryWithWildcards);
+            $stmt->execute();
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $db = null;
+            return $result ?? [];
+        } catch (PDOException $e) {
+            $_SESSION["alerts"]["message"] = $e->getMessage();
+            $db = null;
+            return [];
+        }
+    }
+
     public static function all(): array
     {
         $classname = explode("\\", static::class);
@@ -56,9 +75,8 @@ abstract class A_Model implements I_Model
         foreach ($data as $key => $value) {
             $stmt->bindValue(':' . $key, $value, PDO::PARAM_STR);
         }
-        
+
         if ($stmt->execute()) {
-            
         } else {
             throw new PDOException("Something went wrong");
         }

@@ -17,56 +17,49 @@ class UserController
                 "username" => trim(htmlspecialchars($data["username"])),
                 "password" => trim(htmlspecialchars($data["password"])),
             ];
-            $user = new User($sanatized["username"], password_hash($sanatized["password"],PASSWORD_BCRYPT));
+            $user = new User($sanatized["username"], password_hash($sanatized["password"], PASSWORD_BCRYPT));
             $user->save();
-            echo json_encode([
-                "message" => "Created a new user",
-                "type" => "success",
-            ]);
-
+            JSON::response(200 ,"success","Created a new user");
         } catch (Exception $e) {
-            http_response_code(400);
-            echo json_encode([
-                "message" => "Failed to create User: " . $e->getMessage(),
-                "type" => "error",
-            ]);
+            JSON::response(400,"error","Failed to create User: " . $e->getMessage());
         }
     }
     static public function read()
     {
         try {
             Authentication::checkIfLoggedIn();
-            $users = User::all();
-            $usersWithoutCurrentUser = array_filter($users,fn($user) => $user["username"] != $_SESSION["username"]);
-            $usersWithoutCurrentUser = array_map(function ($user) {
-                return [
-                    "username" => $user["username"]
-                ];
-            },$usersWithoutCurrentUser);
             echo json_encode([
-                "users" =>  [...$usersWithoutCurrentUser] 
-              
+                "users" =>  [...User::removeCurrentUser(User::all())]
+
             ]);
-        }
-        catch(AuthException| Exception $e) {
+        } catch (AuthException | Exception $e) {
             JSON::response(JSON::HTTP_BAD_REQUEST, "error", $e->getMessage());
         }
-
     }
     static public function key($id)
     {
-        try { 
+        try {
             Authentication::checkIfLoggedIn();
             Authentication::checkIfUser((int) $id);
             $user = User::find($id)[0];
-      
+
             echo json_encode([
                 "key" =>  $user["private_key"],
             ]);
-        }
-        catch(AuthException| Exception $e) {
+        } catch (AuthException | Exception $e) {
             JSON::response(JSON::HTTP_BAD_REQUEST, "error", $e->getMessage());
         }
-  
+    }
+
+    static public function search($query)
+    {
+        try {
+            Authentication::checkIfLoggedIn();
+            echo json_encode([
+                "users" =>  [...User::removeCurrentUser(User::search("username", $query))],
+            ]);
+        } catch (AuthException | Exception $e) {
+            JSON::response(JSON::HTTP_BAD_REQUEST, "error", $e->getMessage());
+        }
     }
 }

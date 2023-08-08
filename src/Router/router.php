@@ -7,9 +7,12 @@ use App\Controllers\ChatController;
 use App\Controllers\ConversationController;
 use App\Controllers\HomeController;
 use App\Controllers\MessageController;
+use App\Controllers\SettingsController;
 use App\Controllers\UserController;
 use App\Utils\Router\JSON;
 use App\Router\I_Router;
+use App\Utils\Upload;
+use Exception;
 
 class Router implements I_Router
 {
@@ -31,7 +34,6 @@ class Router implements I_Router
         $matchedRoute = null;
 
         foreach (self::$routes as $pattern => $action) {
-            // Convert route pattern to a valid regex with placeholders
             $pattern = str_replace('/', '\/', $pattern);
             $pattern = preg_replace('/{(\w+)}/', '(?<$1>[^\/]+)', $pattern);
             if (preg_match("/^{$pattern}$/", $requestUrl, $matches)) {
@@ -70,8 +72,14 @@ class Router implements I_Router
             case 'login':
                 HomeController::login();
                 break;
+            case 'logout':
+                AuthController::logout();
+                break;
             case 'chat/index':
                 ChatController::index();
+                break;
+            case 'settings':
+                ChatController::settings();
                 break;
             case 'chat/new':
                 ChatController::new($matches['username']);
@@ -79,6 +87,7 @@ class Router implements I_Router
             case 'get/key':
                 ConversationController::key(5);
                 break;
+
             case 'users':
                 UserController::read();
                 break;
@@ -118,6 +127,21 @@ class Router implements I_Router
                 break;
             case 'auth/login':
                 AuthController::login();
+                break;
+            case 'users/search':
+                UserController::search(JSON::read()["query"]);
+                break;
+                case 'settings/password':
+                    SettingsController::changePassword(JSON::read());
+                    break;
+            case 'upload/image':
+                try {
+                    $profilePicture = new Upload();
+                    $profilePicture->upload();
+                } catch (Exception $e) {
+                    JSON::response(JSON::HTTP_BAD_REQUEST, "error", $e->getMessage());
+                }
+
                 break;
             default:
                 echo '404 Not Found';

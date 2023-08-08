@@ -1,4 +1,4 @@
-const ws = new WebSocket('ws://192.168.1.100:8080');
+const ws = new WebSocket('ws://192.168.1.101:8080');
 
 
 selectedUsername = "";
@@ -8,19 +8,19 @@ function getCookie(name) {
     var cookieValue = "";
     var cookies = document.cookie.split(';');
     for (var i = 0; i < cookies.length; i++) {
-      var cookie = cookies[i].trim();
-      if (cookie.startsWith(name + "=")) {
-        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-        break;
-      }
+        var cookie = cookies[i].trim();
+        if (cookie.startsWith(name + "=")) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+        }
     }
     return cookieValue;
-  }
-  
-  var username = getCookie('username');
+}
 
-  ws.onopen = (event) => {
-    ws.send(JSON.stringify({ action: 'register', username: username}));
+var username = getCookie('username');
+
+ws.onopen = (event) => {
+    ws.send(JSON.stringify({ action: 'register', username: username }));
 };
 const chatWindow = document.getElementById('chatWindow');
 const conversationsWindow = document.getElementById('conversationsWindow');
@@ -31,6 +31,20 @@ function checkURLPattern() {
     const isMatched = pattern.test(currentURL);
     return isMatched;
 }
+
+function formatCustomDate(isoDateString) {
+    const date = new Date(isoDateString);
+  
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const seconds = String(date.getSeconds()).padStart(2, "0");
+  
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  }
+  
 
 function extractHashFromURL() {
     const currentURL = window.location.pathname;
@@ -47,7 +61,7 @@ var sharedKey = null;
 ws.onmessage = (event) => {
     const data = JSON.parse(event.data);
 
-    if(data.channel === "notifications"){
+    if (data.channel === "notifications") {
         let message = JSON.parse(data.message);
         let chatItem = document.getElementById("chatItem-" + message.username);
         let chatText = document.getElementById("chatText-" + message.username);
@@ -56,14 +70,14 @@ ws.onmessage = (event) => {
         if (!notificationIcon && (currentConversation !== message.conversation_hash)) {
             const notificationIconElement = document.createElement("span");
             notificationIconElement.classList.add("notification-icon");
-            notificationIconElement.textContent = "🔴"; 
+            notificationIconElement.textContent = "🔴";
             chatText.textContent = message.message;
             chatItem.appendChild(notificationIconElement);
         }
-    }else {
+    } else {
         let own = data.username == username ? true : false;
-   
-        chatWindow.insertAdjacentHTML('beforeend', renderMessage(decryptMessage(data.message, sharedKey),  own ));
+        console.log(data.sent_at);
+        chatWindow.insertAdjacentHTML('beforeend', renderMessage(decryptMessage(data.message, sharedKey) ,formatCustomDate(data.sent_at), own));
     }
 
 
@@ -72,8 +86,13 @@ function fetchMessages() {
     fetch('/messages/latest/' + currentConversation + '?timestamp=' + lastTimestamp)
         .then(response => response.json())
         .then(data => {
+            let messagesLoading = document.getElementById("messagesLoading");
+            messagesLoading.style.visibility = "hidden";
+            chatWindow.innerHTML = "";
+
             data.messages.forEach(message => {
-                chatWindow.insertAdjacentHTML('beforeend', renderMessage(decryptMessage(message.message_text, sharedKey), message.own));
+                console.log(message.sent_at);
+                chatWindow.insertAdjacentHTML('beforeend', renderMessage(decryptMessage(message.message_text, sharedKey),message.sent_at, message.own));
                 lastTimestamp = message.timestamp
             });
         })
@@ -81,7 +100,9 @@ function fetchMessages() {
 }
 window.onload = async function () {
     try {
-
+        document.getElementById("button-addon2").disabled = true;
+        document.getElementById("button-emoji").disabled = true;
+        document.getElementById("message").disabled = true;
         await getUsers();
 
     } catch (error) {
@@ -90,37 +111,36 @@ window.onload = async function () {
 };
 
 function renderUser(username) {
+    const profileImage = "/public/images/"+ username + ".jpg";
     const sanitizeUsername = DOMPurify.sanitize(username);
     let htmlContent = `
         <a onclick="openChat('${username}')" id="chatItem-${username}"  class="list-group-item list-group-item-action list-group-item-light rounded-0">
-                        <div class="media"><img src="https://bootstrapious.com/i/snippets/sn-chat/avatar.svg"
-                                alt="user" width="50" class="rounded-circle">
+                        <div class="media"><img src="${profileImage}"
+                                alt="user" width="50"   height="50" class="rounded-circle">
                             <div class="media-body ml-4">
                                 <div class="d-flex align-items-center justify-content-between mb-1">
-                                    <h6 class="mb-0">${sanitizeUsername}</h6><small class="small font-weight-bold">2
-                                        Sep</small>
+                                    <h6 class="mb-0 username-field">${sanitizeUsername}</h6><small class="small font-weight-bold"></small>
                                 </div>
-                                <p id="chatText-${username}" class="font-italic text-muted mb-0 text-small">Quis nostrud exercitation
-                                    ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
                             </div>
                         </div>
                     </a>
         `
     return htmlContent;
 }
-
-function renderMessage(message, own = false) {
+  
+function renderMessage(message,dateTime, own = false) {
+    const profileImage = "/public/images/"+ selectedUsername + ".jpg";
 
     const sanitizedMessage = DOMPurify.sanitize(message);
 
     let htmlContent = `
-        <div class="media w-50 mb-3"><img src="https://bootstrapious.com/i/snippets/sn-chat/avatar.svg"
-            alt="user" width="50" class="rounded-circle">
+        <div class="media w-50 mb-3"><img src="${profileImage}"
+        alt="user" width="50"   height="50" class="rounded-circle">
             <div class="media-body ml-3">
                  <div class="bg-light rounded py-2 px-3 mb-2">
                 <p class="text-small mb-0 text-muted">${sanitizedMessage}</p>
                 </div>
-            <p class="small text-muted">12:00 PM | Aug 13</p>
+            <p class="small text-muted">${formatNiceDate(dateTime)}</p>
         </div>
         </div>
         `;
@@ -135,7 +155,7 @@ function renderMessage(message, own = false) {
                     <div class="bg-primary rounded py-2 px-3 mb-2">
                         <p class="text-small mb-0 text-white">${sanitizedMessage}</p>
                     </div>
-                    <p class="small text-muted">12:00 PM | Aug 13</p>
+                    <p class="small text-muted">${formatNiceDate(dateTime)}</p>
                 </div>
             </div>
         `;
@@ -145,14 +165,19 @@ function renderMessage(message, own = false) {
 }
 
 async function openChat(username) {
+    document.getElementById("button-addon2").disabled = false;
+    document.getElementById("button-emoji").disabled = false;
+
+    const messagesLoading = document.getElementById("messagesLoading");
+    messagesLoading.style.visibility = "visible";
+    document.getElementById("message").disabled = false;
     selectedUsername = username;
     let chatItem = document.getElementById("chatItem-" + username);
     notificationIcon = chatItem.querySelector(".notification-icon");
     if (notificationIcon) {
-            notificationIcon.remove();
-      }
+        notificationIcon.remove();
+    }
 
-    chatWindow.innerHTML = "";
     const activeElements = document.getElementsByClassName('active');
     for (const element of activeElements) {
         element.classList.remove('active');
@@ -165,7 +190,7 @@ async function openChat(username) {
     sharedKey = key;
     fetchMessages();
 
-     ws.send(JSON.stringify({ action: 'subscribe', channel: currentConversation }));
+    ws.send(JSON.stringify({ action: 'subscribe', channel: currentConversation }));
 
     chatItem.classList.add('active');
 }
@@ -187,9 +212,11 @@ async function getConversationHashAndKey(username) {
 }
 
 async function getUsers() {
+    const userLoading = document.getElementById("usersLoading");
     return fetch('/users')
         .then(response => response.json())
         .then(data => {
+            userLoading.style.visibility = "hidden";
             data.users.forEach(user => {
                 conversationsWindow.insertAdjacentHTML('beforeend', renderUser(user.username));
 
@@ -230,12 +257,13 @@ function sendMessage() {
     const dataToSend = {
         conversation_hash: currentConversation,
         message: encryptMessage(message, sharedKey),
-        username : username
+        username: username,
+        sent_at: new Date().toISOString()
     };
 
     ws.send(JSON.stringify({ action: 'sendToUser', username: selectedUsername, message: dataToSend }));
 
-   ws.send(JSON.stringify({ action: 'broadcast', channel: currentConversation, message: dataToSend }));
+    ws.send(JSON.stringify({ action: 'broadcast', channel: currentConversation, message: dataToSend }));
 
     return fetch('/messages', {
         method: 'POST',
@@ -246,12 +274,29 @@ function sendMessage() {
     })
         .then(response => response.json())
         .then(data => {
-         
+
         })
         .catch(error => {
             console.error('Error:', error);
             throw error;
         });
-        
+
 
 }
+
+function formatNiceDate(dateString) {
+    const date = new Date(dateString);
+  
+    const options = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      second: "numeric",
+      hour12: true,
+    };
+  
+    return date.toLocaleString(undefined, options);
+  }
+  

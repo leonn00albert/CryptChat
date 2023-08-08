@@ -33,6 +33,16 @@ class User extends A_Model implements FindableByUsername, Persistable
     {
         return password_verify($password, $this->password);
     }
+
+    public static function removeCurrentUser(array $users):array 
+    {
+        $usersWithoutCurrentUser = array_filter($users, fn ($user) => $user["username"] != $_SESSION["username"]);
+        return array_map(function ($user) {
+            return [
+                "username" => $user["username"]
+            ];
+        }, $usersWithoutCurrentUser);
+    }
     public function save():bool
     {
         if (is_null($this->publicKey) || is_null($this->privateKey)) {

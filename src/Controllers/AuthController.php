@@ -8,17 +8,17 @@ use Exception;
 
 class AuthController
 {
-    static public function login() :void
+    static public function login(): void
     {
         try {
             $data = JSON::read();
             $user = User::findByUsername($data["username"]);
-            if($user->verifyPassword($data["password"])) {
+            if ($user->verifyPassword($data["password"])) {
                 $_SESSION["auth"] = true;
                 $_SESSION["user"] = $user;
                 $_SESSION["username"] = $data["username"];
-                setcookie('username',$data["username"], 0, '/chat');               
-                 echo json_encode([
+                setcookie('username', $data["username"], 0, '/chat');
+                echo json_encode([
                     "message" => "Succesfully logged in",
                     "type" => "success",
                 ]);
@@ -32,5 +32,15 @@ class AuthController
                 "type" => "error",
             ]);
         }
+    }
+    static public function logout(): void
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        $_SESSION = array();
+        session_destroy();
+        header('Location: /');
+        exit;
     }
 }

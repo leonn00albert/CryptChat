@@ -7,14 +7,14 @@ use App\Controllers\ApiController;
 use App\Controllers\AuthController;
 use App\Controllers\ChatController;
 use App\Controllers\ConversationController;
+use App\Controllers\FileController;
 use App\Controllers\HomeController;
 use App\Controllers\MessageController;
 use App\Controllers\SettingsController;
 use App\Controllers\UserController;
 use App\Utils\Router\JSON;
 use App\Router\I_Router;
-use App\Utils\Upload;
-use Exception;
+
 
 class Router implements I_Router
 {
@@ -64,73 +64,28 @@ class Router implements I_Router
      */
     private static function handleGetRequest(string $route, array $matches)
     {
-        switch ($route) {
-            case 'home':
-                HomeController::index();
-                break;
-            case 'register':
-                HomeController::register();
-                break;
-            case 'login':
-                HomeController::login();
-                break;
-            case 'logout':
-                AuthController::logout();
-                break;
-
-            case 'admin/index':
-
-                AdminController::index();
-                break;
-
-            case 'admin/logs':
-
-                AdminController::logs();
-                break;
-            case 'admin/users':
-
-                AdminController::users();
-                break;
-            case 'chat/index':
-                ChatController::index();
-                break;
-            case 'settings':
-                ChatController::settings();
-                break;
-            case 'chat/new':
-                ChatController::new($matches['username']);
-                break;
-            case 'get/key':
-                ConversationController::key(5);
-                break;
-
-            case 'users':
-                UserController::read();
-                break;
-
-            case 'api/users':
-                ApiController::users();
-                break;
-                case 'api/messages':
-                    ApiController::messages();
-                    break;
-            case 'conversations/read':
-                ConversationController::read($matches['hash']);
-                break;
-            case 'users/key':
-                UserController::key(13);
-                break;
-            case 'messages/latest':
-                MessageController::getMessageByTimestamp($matches['hash']);
-                break;
-            case 'chats/show':
-                ChatController::show();
-                break;
-
-            default:
-                echo '404 Not Found';
-                break;
-        }
+        match ($route) {
+            "home" => HomeController::index(),
+            'register' => HomeController::register(),
+            "login" => HomeController::login(),
+            "logout" => AuthController::logout(),
+            "admin/index" => AdminController::index(),
+            "admin/logs" => AdminController::logs(),
+            "admin/users" => AdminController::users(),
+            "settings" => ChatController::settings(),
+            "chats/show" => ChatController::show(),
+            "chat/index" => ChatController::index(),
+            "chat/new" => ChatController::new($matches['username']),
+            "get/key" => ConversationController::key(5),
+            "api/users" => ApiController::users(),
+            "api/messages" => ApiController::messages(),
+            "conversations/read" => ConversationController::read($matches['hash']),
+            "users" => UserController::read(),
+            "users/key" => UserController::key(13),
+            "messages/latest" => MessageController::getMessageByTimestamp($matches['hash']),
+        
+            default => HomeController::pageNotFound()
+        };
     }
     /**
      * Handle a POST request and execute the corresponding controller action.
@@ -140,34 +95,14 @@ class Router implements I_Router
      */
     private static function handlePostRequest(string $route, array $matches)
     {
-        switch ($route) {
-            case 'user/create':
-                UserController::create(JSON::read());
-                break;
-            case 'messages/new':
-                MessageController::create(JSON::read());
-                break;
-            case 'auth/login':
-                AuthController::login();
-                break;
-            case 'users/search':
-                UserController::search(JSON::read()["query"]);
-                break;
-            case 'settings/password':
-                SettingsController::changePassword(JSON::read());
-                break;
-            case 'upload/image':
-                try {
-                    $profilePicture = new Upload();
-                    $profilePicture->upload();
-                } catch (Exception $e) {
-                    JSON::response(JSON::HTTP_BAD_REQUEST, "error", $e->getMessage());
-                }
-
-                break;
-            default:
-                echo '404 Not Found';
-                break;
-        }
+        match($route) {
+            "user/create" =>  UserController::create(JSON::read()),
+            'messages/new' => MessageController::create(JSON::read()),
+            "auth/login" =>  AuthController::login(),
+            "users/search" => UserController::search(JSON::read()["query"]),
+            "settings/password" =>  SettingsController::changePassword(JSON::read()),
+            "upload/image" => FileController::profilePicture(),
+            default => HomeController::pageNotFound()
+        };
     }
 }

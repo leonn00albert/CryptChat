@@ -15,4 +15,8 @@ class HomeController
     {
         require_once(__DIR__ . "/../views/home/register.html");
     }
+    static public function pageNotFound()
+    {
+        require_once(__DIR__ . "/../views/home/404.html");
+    }
 }

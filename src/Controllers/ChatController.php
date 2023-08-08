@@ -11,21 +11,21 @@ use App\Utils\Router\JSON;
 use App\Utils\Auth\AuthException;
 use Exception;
 
-class ChatController
+class ChatController extends A_Controller
 {
-    static public function index()
+    static public function index(): string
     {
-        require_once(__DIR__ . "/../views/chat/index.html");
+        return self::renderView("chat/index.html");
     }
 
-    static public function settings()
+    static public function settings(): string
     {
-        require_once(__DIR__ . "/../views/chat/settings.html");
+        return self::renderView("chat/settings.html");
     }
 
-    static public function show()
+    static public function show(): string
     {
-        require_once(__DIR__ . "/../views/chat/index.html");
+         return self::renderView("chat/index.html");
     }
 
     /**
@@ -55,16 +55,20 @@ class ChatController
                 $conversation = Conversation::findByHash($conversationHashA);
                 User_Conversation::create(["user_id" => $sender->id, "conversation_id" => $conversation->id]);
                 User_Conversation::create(["user_id" => $receiver->id, "conversation_id" => $conversation->id]);
-                echo json_encode([
+                echo json_encode(
+                    [
                     "hash" => $conversation->hash,
                     "sharedKey" => $conversation->sharedKey
-                ]);
+                    ]
+                );
             } else {
 
-                echo json_encode([
+                echo json_encode(
+                    [
                     "hash" => $conversation->hash,
                     "sharedKey" => $conversation->sharedKey
-                ]);
+                    ]
+                );
             }
         } catch (AuthException | Exception $e) {
             JSON::response(JSON::HTTP_BAD_REQUEST, "error", $e->getMessage());

@@ -18,19 +18,23 @@ class AuthController
                 $_SESSION["user"] = $user;
                 $_SESSION["username"] = $data["username"];
                 setcookie('username', $data["username"], 0, '/chat');
-                echo json_encode([
+                echo json_encode(
+                    [
                     "message" => "Succesfully logged in",
                     "type" => "success",
-                ]);
+                    ]
+                );
                 exit();
             }
             throw new Exception("Invalid username or password");
         } catch (Exception $e) {
             http_response_code(400);
-            echo json_encode([
+            echo json_encode(
+                [
                 "message" => "Failed to create User: " . $e->getMessage(),
                 "type" => "error",
-            ]);
+                ]
+            );
         }
     }
     static public function logout(): void

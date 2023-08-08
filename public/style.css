@@ -61,6 +61,7 @@ input::placeholder {
 .list-group-item-light.list-group-item-action {
   cursor: pointer;
 }
+
 .list-group-item-light.list-group-item-action.active:hover .username-field {
   color: white;
 
@@ -75,7 +76,7 @@ input::placeholder {
 #messagesLoading {
   top: 40%;
   position: relative;
-  height:0%;
+  height: 0%;
   visibility: hidden;
 }
 
@@ -90,8 +91,14 @@ input::placeholder {
   padding: 20px;
   z-index: 1000;
 }
+
 .emoji {
   font-size: 24px;
   cursor: pointer;
   padding: 5px;
+}
+
+.notification-icon {
+  position: relative;
+  top: -20px;
 }

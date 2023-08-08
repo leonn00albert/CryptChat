@@ -45,11 +45,40 @@
                 <div class="px-4 py-5 chat-box bg-white" id="chatWindow">
               
                 </div>
+                <div id="emojiModal">
+                    <h6>Choose an Emoji</h6>     <button onclick="closeEmojiModal()">Close</button>
+                    <div class="row">
+                        <div class="col">
+                            <div class="emoji" onclick="insertEmoji('😀')">😀</div>
+                            <div class="emoji" onclick="insertEmoji('😄')">😄</div>
+                            <div class="emoji" onclick="insertEmoji('😊')">😊</div>
+                            <div class="emoji" onclick="insertEmoji('🥰')">🥰</div>
+                        </div>
+                        <div class="col">
+                                  
+                    <div class="emoji" onclick="insertEmoji('😎')">😎</div>
+                    <div class="emoji" onclick="insertEmoji('😀')">😀</div>
+                    <div class="emoji" onclick="insertEmoji('😄')">😄</div>
+                    <div class="emoji" onclick="insertEmoji('😊')">😊</div>
+                        </div>
+                        <div class="col">
+                            <div class="emoji" onclick="insertEmoji('🥰')">🥰</div>
+                            <div class="emoji" onclick="insertEmoji('😎')">😎</div>
+                        </div>
+                    </div>
+    
+
+                    <!-- Add more emoji divs here -->
+               
+                </div>
                 <div class="input-group">
                     <input type="text" id="message" placeholder="Type a message " aria-describedby="button-addon2"
                         class="form-control rounded-0 border-0 py-4 bg-light">
                    
                     <div class="input-group-append" style="background: white;">
+
+                        <button id="button-emoji" type="submit" class="btn btn-link" onclick="showEmojiContainer()"> <i
+                            class="fa  fa-smile-o"></i></button>
                         <button id="button-addon2" type="submit" class="btn btn-link" onclick="sendMessage()"> <i
                                 class="fa fa-paper-plane"></i></button>
                     </div>
@@ -63,6 +92,25 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.3.2/purify.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
     <script src="/public/chat.js">  </script>
+    <script>
+
+const emojiModal = document.getElementById('emojiModal');
+        const emojiButton = document.getElementById('emojiButton');
+        const emojiText = document.getElementById('emojiText');
+
+        function insertEmoji(emoji) {
+            const message = document.getElementById('message');
+            message.value += emoji;
+            closeEmojiModal();
+        }
+        function showEmojiContainer() {
+            emojiModal.style.display = 'block';
+        }
+
+        function closeEmojiModal() {
+            emojiModal.style.display = 'none';
+        }
+    </script>
     <script>
         function searchUser() {
             const userLoading = document.getElementById("usersLoading");

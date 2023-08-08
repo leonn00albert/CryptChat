@@ -101,6 +101,7 @@ function fetchMessages() {
 window.onload = async function () {
     try {
         document.getElementById("button-addon2").disabled = true;
+        document.getElementById("button-emoji").disabled = true;
         document.getElementById("message").disabled = true;
         await getUsers();
 
@@ -165,6 +166,8 @@ function renderMessage(message,dateTime, own = false) {
 
 async function openChat(username) {
     document.getElementById("button-addon2").disabled = false;
+    document.getElementById("button-emoji").disabled = false;
+
     const messagesLoading = document.getElementById("messagesLoading");
     messagesLoading.style.visibility = "visible";
     document.getElementById("message").disabled = false;

@@ -7,6 +7,7 @@ use App\Controllers\ChatController;
 use App\Controllers\ConversationController;
 use App\Controllers\HomeController;
 use App\Controllers\MessageController;
+use App\Controllers\SettingsController;
 use App\Controllers\UserController;
 use App\Utils\Router\JSON;
 use App\Router\I_Router;
@@ -131,7 +132,7 @@ class Router implements I_Router
                 UserController::search(JSON::read()["query"]);
                 break;
                 case 'settings/password':
-                    Settings::passwordChange(JSON::read());
+                    SettingsController::changePassword(JSON::read());
                     break;
             case 'upload/image':
                 try {

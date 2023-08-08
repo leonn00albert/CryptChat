@@ -78,3 +78,20 @@ input::placeholder {
   height:0%;
   visibility: hidden;
 }
+
+#emojiModal {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 70%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 20px;
+  z-index: 1000;
+}
+.emoji {
+  font-size: 24px;
+  cursor: pointer;
+  padding: 5px;
+}

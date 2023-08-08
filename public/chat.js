@@ -64,14 +64,12 @@ ws.onmessage = (event) => {
     if (data.channel === "notifications") {
         let message = JSON.parse(data.message);
         let chatItem = document.getElementById("chatItem-" + message.username);
-        let chatText = document.getElementById("chatText-" + message.username);
 
         const notificationIcon = chatItem.querySelector(".notification-icon");
         if (!notificationIcon && (currentConversation !== message.conversation_hash)) {
             const notificationIconElement = document.createElement("span");
             notificationIconElement.classList.add("notification-icon");
             notificationIconElement.textContent = "🔴";
-            chatText.textContent = message.message;
             chatItem.appendChild(notificationIconElement);
         }
     } else {

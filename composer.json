@@ -14,5 +14,8 @@
     "require": {
         "cboden/ratchet": "^0.4.4",
         "vlucas/phpdotenv": "^5.5"
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^1.10"
     }
 }

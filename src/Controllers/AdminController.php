@@ -1,19 +1,21 @@
 <?php
+
 namespace App\Controllers;
 
-class AdminController
+class AdminController extends A_Controller
 {
-    static public function index()
+    static public function index(): string
     {
-        require_once(__DIR__ . "/../views/admin/index.html");
+        return self::renderView("admin/index.html");
+     
     }
-    static public function users()
+    static public function users(): string
     {
-        require_once(__DIR__ . "/../views/admin/users.html");
+        return self::renderView("admin/users.html");
+ 
     }
-    static public function logs()
+    static public function logs(): string
     {
-        require_once(__DIR__ . "/../views/admin/logs.html");
+        return self::renderView("admin/logs.html");
     }
-
 }

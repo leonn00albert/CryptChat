@@ -1,22 +1,24 @@
 <?php
+
 namespace App\Controllers;
 
-class HomeController
+class HomeController extends A_Controller
 {
-    static public function index()
+    static public function index(): string
     {
-        require_once(__DIR__ . "/../views/home/index.html");
+        return self::renderView("home/index.html");
     }
-    static public function login()
+    static public function login(): string
     {
-        require_once(__DIR__ . "/../views/home/login.html");
+        return self::renderView("home/login.html");
     }
-    static public function register()
+    static public function register(): string
     {
-        require_once(__DIR__ . "/../views/home/register.html");
+        return self::renderView("home/register.html");
     }
-    static public function pageNotFound()
+    static public function pageNotFound(): string
     {
-        require_once(__DIR__ . "/../views/home/404.html");
+        return self::renderView("home/404.html");
+
     }
 }

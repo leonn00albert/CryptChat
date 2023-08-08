@@ -11,21 +11,21 @@ use App\Utils\Router\JSON;
 use App\Utils\Auth\AuthException;
 use Exception;
 
-class ChatController
+class ChatController extends A_Controller
 {
-    static public function index()
+    static public function index(): string
     {
-        require_once(__DIR__ . "/../views/chat/index.html");
+        return self::renderView("chat/index.html");
     }
 
-    static public function settings()
+    static public function settings(): string
     {
-        require_once(__DIR__ . "/../views/chat/settings.html");
+        return self::renderView("chat/settings.html");
     }
 
-    static public function show()
+    static public function show(): string
     {
-        require_once(__DIR__ . "/../views/chat/index.html");
+         return self::renderView("chat/index.html");
     }
 
     /**

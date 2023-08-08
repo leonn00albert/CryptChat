@@ -19,7 +19,7 @@ abstract class A_Model implements I_Model
             $stmt->execute();
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $db = null;
-            return $result ?? [];
+            return $result;
         } catch (PDOException $e) {
             $_SESSION["alerts"]["message"] = $e->getMessage();
             $db = null;
@@ -38,7 +38,7 @@ abstract class A_Model implements I_Model
             $stmt->execute();
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $db = null;
-            return $result ?? [];
+            return $result;
         } catch (PDOException $e) {
             $_SESSION["alerts"]["message"] = $e->getMessage();
             $db = null;
@@ -55,7 +55,7 @@ abstract class A_Model implements I_Model
             $stmt->execute();
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $db = null;
-            return $result ?? [];
+            return $result;
         } catch (PDOException $e) {
             $_SESSION["alerts"]["message"] = $e->getMessage();
             $db = null;

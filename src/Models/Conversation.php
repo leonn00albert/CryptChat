@@ -13,7 +13,7 @@ use PDOException;
 class Conversation extends A_Model implements Persistable, FindableByHash
 {
     /**
-     * @var ?int|null The unique identifier for the conversation. Null if not yet saved in the database.
+     * @var ?int The unique identifier for the conversation. Null if not yet saved in the database.
      */
     public ?int $id = null;
 

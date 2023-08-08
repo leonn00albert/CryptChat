@@ -12,11 +12,18 @@ use App\Utils\Auth\generateKeyPair;
 
 class User extends A_Model implements FindableByUsername, Persistable
 {
+
+
     public ?int $id = null;
     public string $username;
     public string $password;
+    public ?bool $own = null;
+
     public ?string $publicKey = null;
     private ?string $privateKey = null;
+    public ?string $public_key = null;
+    public ?string $private_key = null;
+
 
     public function __construct(string $username = null, string $password = null, string $publicKey = null, string $privateKey = null)
     {

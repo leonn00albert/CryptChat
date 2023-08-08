@@ -11,7 +11,7 @@ use Exception;
 
 class MessageController
 {
-    static public function create($data)
+    static public function create($data): void
     {
         try {
             Authentication::checkIfLoggedIn();

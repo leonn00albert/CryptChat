@@ -20,6 +20,7 @@ class generateKeyPair
      
         } else {
             echo "Sodium extension not available. Please make sure you are using PHP 7.2 or later.";
+            return [];
         }
     }
 }

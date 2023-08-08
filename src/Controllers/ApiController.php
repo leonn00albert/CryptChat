@@ -10,7 +10,7 @@ use Exception;
 class ApiController
 {
 
-    static public function users()
+    static public function users() :void
     {
         try {
             echo json_encode([
@@ -20,7 +20,7 @@ class ApiController
             JSON::response(JSON::HTTP_BAD_REQUEST, "error", $e->getMessage());
         }
     }
-    static public function messages()
+    static public function messages() :void
     {
         try {
             echo json_encode([

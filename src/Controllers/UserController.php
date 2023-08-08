@@ -10,7 +10,7 @@ use Exception;
 
 class UserController
 {
-    static public function create($data)
+    static public function create($data): void
     {
         try {
             $sanatized = [
@@ -24,7 +24,7 @@ class UserController
             JSON::response(400,"error","Failed to create User: " . $e->getMessage());
         }
     }
-    static public function read()
+    static public function read(): void
     {
         try {
             Authentication::checkIfLoggedIn();
@@ -36,7 +36,7 @@ class UserController
             JSON::response(JSON::HTTP_BAD_REQUEST, "error", $e->getMessage());
         }
     }
-    static public function key($id)
+    static public function key($id): void
     {
         try {
             Authentication::checkIfLoggedIn();
@@ -51,7 +51,7 @@ class UserController
         }
     }
 
-    static public function search($query)
+    static public function search($query): void
     {
         try {
             Authentication::checkIfLoggedIn();

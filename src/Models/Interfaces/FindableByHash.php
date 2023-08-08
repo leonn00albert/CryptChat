@@ -12,8 +12,8 @@ interface FindableByHash
     /**
      * Find a conversation by its hash.
      *
-     * @param  string $hashA The first hash to search for.
-     * @param  string $hashB (Optional) The second hash to search for. Defaults to an empty string.
+     * @param string $hashA The first hash to search for.
+     * @param string $hashB (Optional) The second hash to search for. Defaults to an empty string.
      *
      * @return Conversation|null Returns a Conversation object if a conversation with the given hash is found,
      *                          or null if no conversation is found.

@@ -11,11 +11,13 @@ final class HomeRoutes
 {
     public static function get(string $route): void
     {
-        echo match ($route) {
+        $action = match ($route) {
             'home/index' => HomeController::index(),
             'home/register' => HomeController::register(),
             'home/login' => HomeController::login(),
             'home/logout' => AuthController::logout(),
+            default => HomeController::pageNotFound()
         };
+        echo $action;
     }
 }

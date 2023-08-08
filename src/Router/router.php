@@ -51,15 +51,15 @@ class Router implements I_Router
 
         if ($matchedRoute) {
             switch ($_SERVER['REQUEST_METHOD']) {
-                case 'GET':
-                    self::handleGetRequest($matchedRoute, $matches ?? []);
-                    break;
-                case 'POST':
-                    self::handlePostRequest($matchedRoute, $matches ?? []);
-                    break;
-                default:
-                    echo 'Invalid request method.';
-                    break;
+            case 'GET':
+                self::handleGetRequest($matchedRoute, $matches ?? []);
+                break;
+            case 'POST':
+                self::handlePostRequest($matchedRoute, $matches ?? []);
+                break;
+            default:
+                echo 'Invalid request method.';
+                break;
             }
         } else {
             echo '404 Not Found';
@@ -68,7 +68,7 @@ class Router implements I_Router
     /**
      * Handle a GET request and execute the corresponding controller action.
      *
-     * @param string $route   The matched route.
+     * @param string        $route   The matched route.
      * @param array<string> $matches The named placeholders in the route pattern.
      */
     private static function handleGetRequest(string $route, array $matches): void
@@ -93,7 +93,7 @@ class Router implements I_Router
     /**
      * Handle a POST request and execute the corresponding controller action.
      *
-     * @param string $route   The matched route.
+     * @param string        $route   The matched route.
      * @param array<string> $matches The named placeholders in the route pattern.
      */
     private static function handlePostRequest(string $route, array $matches): void

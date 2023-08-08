@@ -69,7 +69,7 @@ class Upload
     /**
      * Validates if the given image file type is allowed.
      *
-     * @param  string $imageFileType The file type of the image to be checked.
+     * @param string $imageFileType The file type of the image to be checked.
      *
      * @throws Exception If the image file type is not allowed.
      */

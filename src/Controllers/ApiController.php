@@ -12,9 +12,9 @@ use Exception;
 
 class ApiController
 {
-/**
- * Get a list of all users.
- */
+    /**
+     * Get a list of all users.
+     */
     public static function users(): void
     {
         try {
@@ -28,9 +28,9 @@ class ApiController
         }
     }
 
-/**
- * Get a list of all messages.
- */
+    /**
+     * Get a list of all messages.
+     */
     public static function messages(): void
     {
         try {

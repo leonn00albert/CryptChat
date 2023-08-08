@@ -111,6 +111,9 @@ class Router implements I_Router
             case 'api/users':
                 ApiController::users();
                 break;
+                case 'api/messages':
+                    ApiController::messages();
+                    break;
             case 'conversations/read':
                 ConversationController::read($matches['hash']);
                 break;

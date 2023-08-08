@@ -15,7 +15,7 @@ Router::get('/admin', 'admin/index'); // move later
 Router::get('/admin/users', 'admin/users'); // move later
 Router::get('/admin/logs', 'admin/logs'); // move later
 Router::get('/api/users', 'api/users');// move later
-
+Router::get('/api/messages', 'api/messages');// move later
 
 if (isset($_SESSION["auth"]) && $_SESSION["auth"]) {
     Router::get('/chat', 'chat/index');

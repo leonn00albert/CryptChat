@@ -55,16 +55,20 @@ class ChatController extends A_Controller
                 $conversation = Conversation::findByHash($conversationHashA);
                 User_Conversation::create(["user_id" => $sender->id, "conversation_id" => $conversation->id]);
                 User_Conversation::create(["user_id" => $receiver->id, "conversation_id" => $conversation->id]);
-                echo json_encode([
+                echo json_encode(
+                    [
                     "hash" => $conversation->hash,
                     "sharedKey" => $conversation->sharedKey
-                ]);
+                    ]
+                );
             } else {
 
-                echo json_encode([
+                echo json_encode(
+                    [
                     "hash" => $conversation->hash,
                     "sharedKey" => $conversation->sharedKey
-                ]);
+                    ]
+                );
             }
         } catch (AuthException | Exception $e) {
             JSON::response(JSON::HTTP_BAD_REQUEST, "error", $e->getMessage());

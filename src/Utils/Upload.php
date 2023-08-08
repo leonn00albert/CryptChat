@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace App\Utils;
 
 use Exception;
@@ -10,34 +13,29 @@ use Exception;
  *
  * @package App\Utils
  */
-class Upload {
+class Upload
+{
     /**
      * Allowed image file types.
      *
-     * @var string[]
+     * @var array<string>
      */
-    private $allowedImageTypes = ["jpg"];
+    private array $allowedImageTypes = ['jpg'];
 
     /**
      * Target directory where uploaded images will be stored.
-     *
-     * @var string
      */
-    private $targetDir =  __DIR__ . "/../../public/images/";
+    private string $targetDir = __DIR__ . '/../../public/images/';
 
     /**
      * Maximum file size allowed for the uploaded image (in bytes).
-     *
-     * @var int
      */
-    private $maxFileSize = 5000000; // 5MB
+    private int $maxFileSize = 5000000; // 5MB
 
     /**
      * The full path to the target file.
-     *
-     * @var string
      */
-    private $targetFile;
+    private string $targetFile;
 
     /**
      * Upload constructor.
@@ -46,21 +44,39 @@ class Upload {
      */
     public function __construct()
     {
+        $imageFileType = strtolower(pathinfo($_FILES['profileImage']['name'], PATHINFO_EXTENSION));
+        $this->targetFile = $this->targetDir . basename($_SESSION['username']) . '.' . $imageFileType;
+    }
 
-            $imageFileType = strtolower(pathinfo($_FILES["profileImage"]["name"], PATHINFO_EXTENSION));
-            $this->targetFile = $this->targetDir . basename($_SESSION["username"]) . '.' . $imageFileType;
+    /**
+     * Uploads the image to the target directory.
+     *
+     * @throws Exception If there is an error uploading the image or if validation fails.
+     */
+    public function upload(): void
+    {
+        $imageFileType = strtolower(pathinfo($_FILES['profileImage']['name'], PATHINFO_EXTENSION));
+        //$this->isValidFileType($imageFileType);
+        $this->isValidSize();
+
+        if (move_uploaded_file($_FILES['profileImage']['tmp_name'], $this->targetFile)) {
+            echo 'The image ' . basename($_FILES['profileImage']['name']) . ' has been uploaded.';
+        } else {
+            throw new Exception('There was an error uploading your image.');
+        }
     }
 
     /**
      * Validates if the given image file type is allowed.
      *
-     * @param string $imageFileType The file type of the image to be checked.
+     * @param  string $imageFileType The file type of the image to be checked.
+     *
      * @throws Exception If the image file type is not allowed.
      */
     protected function isValidFileType(string $imageFileType): void
     {
-        if (!in_array($imageFileType, $this->allowedImageTypes)) {
-            throw new Exception("Wrong file type, only JPG, JPEG, PNG, and GIF images are allowed.");
+        if (! in_array($imageFileType, $this->allowedImageTypes)) {
+            throw new Exception('Wrong file type, only JPG, JPEG, PNG, and GIF images are allowed.');
         }
     }
 
@@ -71,26 +87,8 @@ class Upload {
      */
     protected function isValidSize(): void
     {
-        if ($_FILES["profileImage"]["size"] > $this->maxFileSize) {
-            throw new Exception("Your image is too large, max size: " . (string)($this->maxFileSize / 1000000) . " MB");
-        }
-    }
-
-    /**
-     * Uploads the image to the target directory.
-     *
-     * @throws Exception If there is an error uploading the image or if validation fails.
-     */
-    public function upload(): void
-    {
-        $imageFileType = strtolower(pathinfo($_FILES["profileImage"]["name"], PATHINFO_EXTENSION));
-        //$this->isValidFileType($imageFileType);
-        $this->isValidSize();
-
-        if (move_uploaded_file($_FILES["profileImage"]["tmp_name"], $this->targetFile)) {
-            echo "The image " . basename($_FILES["profileImage"]["name"]) . " has been uploaded.";
-        } else {
-            throw new Exception("There was an error uploading your image.");
+        if ($_FILES['profileImage']['size'] > $this->maxFileSize) {
+            throw new Exception('Your image is too large, max size: ' . (string) ($this->maxFileSize / 1000000) . ' MB');
         }
     }
 }

@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace App\Controllers;
 
 use App\Models\Message;
@@ -9,25 +12,35 @@ use Exception;
 
 class ApiController
 {
-
-    static public function users() :void
+/**
+ * Get a list of all users.
+ */
+    public static function users(): void
     {
         try {
-            echo json_encode([
-                "users" =>  [...User::all()],
-            ]);
+            echo json_encode(
+                [
+                    'users' => [...User::all()],
+                ]
+            );
         } catch (AuthException | Exception $e) {
-            JSON::response(JSON::HTTP_BAD_REQUEST, "error", $e->getMessage());
+            JSON::response(JSON::HTTP_BAD_REQUEST, 'error', $e->getMessage());
         }
     }
-    static public function messages() :void
+
+/**
+ * Get a list of all messages.
+ */
+    public static function messages(): void
     {
         try {
-            echo json_encode([
-                "messages" =>  [...Message::all()],
-            ]);
+            echo json_encode(
+                [
+                    'messages' => [...Message::all()],
+                ]
+            );
         } catch (AuthException | Exception $e) {
-            JSON::response(JSON::HTTP_BAD_REQUEST, "error", $e->getMessage());
+            JSON::response(JSON::HTTP_BAD_REQUEST, 'error', $e->getMessage());
         }
     }
 }

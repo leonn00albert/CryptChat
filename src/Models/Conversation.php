@@ -23,10 +23,10 @@ class Conversation extends A_Model implements Persistable, FindableByHash
     public ?string $hash;
 
      /**
-     * The shared key for the conversation.
-     *
-     * @var string The shared key value.
-     */
+      * The shared key for the conversation.
+      *
+      * @var string The shared key value.
+      */
     public string $sharedKey;
     
     public function __construct(?string $hash = null, string $sharedKey = null)
@@ -42,13 +42,17 @@ class Conversation extends A_Model implements Persistable, FindableByHash
         $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         if (is_null($this->id)) {
-            $stmt = $db->prepare("INSERT INTO conversations (hash, sharedKey) 
-                VALUES (:hash, :sharedKey)");
+            $stmt = $db->prepare(
+                "INSERT INTO conversations (hash, sharedKey) 
+                VALUES (:hash, :sharedKey)"
+            );
         } else {
-            $stmt = $db->prepare("UPDATE conversations 
+            $stmt = $db->prepare(
+                "UPDATE conversations 
                                   SET hash = :hash,
                                   sharedKey = :sharedKey
-                                  WHERE id = :id");
+                                  WHERE id = :id"
+            );
             $stmt->bindParam(':id', $this->id);
         }
         $sharedKeyJson = json_encode($this->sharedKey);

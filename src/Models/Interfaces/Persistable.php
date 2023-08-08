@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace App\Models\Interfaces;
 
 use PDOException;
@@ -12,6 +15,7 @@ interface Persistable
      * a new keypair will be generated and assigned before saving to the database.
      *
      * @return bool Returns true on successful save, or false if there was an error.
+     *
      * @throws PDOException If there is an error executing the database query.
      */
     public function save(): bool;

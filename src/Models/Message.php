@@ -18,9 +18,9 @@ class Message extends A_Model implements FindableByConversationId , Persistable
     public ?int $id = null;
 
     /**
-     * @var string The ID of the conversation that this message belongs to.
+     * @var int The ID of the conversation that this message belongs to.
      */
-    public string $conversationId;
+    public int $conversationId;
 
     /**
      * @var string The text content of the message.
@@ -47,7 +47,8 @@ class Message extends A_Model implements FindableByConversationId , Persistable
      *           This property is private as it should be managed internally by the class.
      */
     private bool $is_read = false;
-    public function __construct( string $conversationId=null,$messageText=null,$user=null) {
+    public function __construct( int $conversationId=null,$messageText=null,$user=null)
+    {
         if(isset($conversationId) && isset($messageText)&& isset($user)) {
             $this->conversationId = $conversationId;
             $this->messageText = $messageText;
@@ -60,13 +61,17 @@ class Message extends A_Model implements FindableByConversationId , Persistable
         $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
         if (is_null($this->id)) {
-            $stmt = $db->prepare("INSERT INTO messages (conversation_id, message_text, sent_at, is_read, username, timestamp) 
-                VALUES (:conversation_id, :message_text, :sent_at, :is_read,:username, :timestamp)");
+            $stmt = $db->prepare(
+                "INSERT INTO messages (conversation_id, message_text, sent_at, is_read, username, timestamp) 
+                VALUES (:conversation_id, :message_text, :sent_at, :is_read,:username, :timestamp)"
+            );
         } else {
-            $stmt = $db->prepare("UPDATE messages 
+            $stmt = $db->prepare(
+                "UPDATE messages 
                                   SET conversation_id = :conversation_id,
                                       message_text = :message_text, sent_at = :sent_at, is_read = :is_read
-                                  WHERE id = :id");
+                                  WHERE id = :id"
+            );
             $stmt->bindParam(':id', $this->id);
         }
         $date =date('Y-m-d H:i:s');
@@ -99,7 +104,8 @@ class Message extends A_Model implements FindableByConversationId , Persistable
             return [];
         }
     }
-    static public function findByConversationIdAndTimestamp($conversationId, $timestamp) {
+    static public function findByConversationIdAndTimestamp($conversationId, $timestamp)
+    {
         try {
             $db = DB::getInstance();
        

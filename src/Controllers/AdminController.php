@@ -1,21 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controllers;
 
 class AdminController extends A_Controller
 {
-    static public function index(): string
+    public static function index(): string
     {
-        return self::renderView("admin/index.html");
-     
+        return self::renderView('admin/index.html');
     }
-    static public function users(): string
+    public static function users(): string
     {
-        return self::renderView("admin/users.html");
- 
+        return self::renderView('admin/users.html');
     }
-    static public function logs(): string
+    public static function logs(): string
     {
-        return self::renderView("admin/logs.html");
+        return self::renderView('admin/logs.html');
     }
 }

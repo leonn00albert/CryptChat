@@ -5,7 +5,8 @@ use Exception;
 /**
  * Class A_Controller
  */
-class A_Controller {
+class A_Controller
+{
     /**
      * Renders a view file and returns its content.
      *
@@ -13,10 +14,11 @@ class A_Controller {
      *
      * @return string The content of the rendered view.
      */
-    static protected function renderView(string $viewPath): string {
+    static protected function renderView(string $viewPath): string
+    {
         try {
             ob_start();
-            require_once(__DIR__ . "/../views/" . $viewPath);
+            include_once __DIR__ . "/../views/" . $viewPath;
             $content = ob_get_clean();
             return $content;
         } catch (Exception $e) {

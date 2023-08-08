@@ -1,24 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controllers;
 
 class HomeController extends A_Controller
 {
-    static public function index(): string
+    public static function index(): string
     {
-        return self::renderView("home/index.html");
+        return self::renderView('home/index.html');
     }
-    static public function login(): string
+    public static function login(): string
     {
-        return self::renderView("home/login.html");
+        return self::renderView('home/login.html');
     }
-    static public function register(): string
+    public static function register(): string
     {
-        return self::renderView("home/register.html");
+        return self::renderView('home/register.html');
     }
-    static public function pageNotFound(): string
+    public static function pageNotFound(): string
     {
-        return self::renderView("home/404.html");
-
+        return self::renderView('home/404.html');
     }
 }

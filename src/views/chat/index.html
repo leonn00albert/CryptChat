@@ -24,12 +24,14 @@
                         </p>
                     </div>
                     <div class="messages-box">
-                        <input placeholder="Search for users: " type="text" class="user-search form-control rounded-0 border-0 py-4 " id="searchInput" onchange="searchUser()" />
+                        <input placeholder="Search for users: " type="text"
+                            class="user-search form-control rounded-0 border-0 py-4 " id="searchInput"
+                            onchange="searchUser()" />
                         <div class="d-flex justify-content-center" id="usersLoading">
                             <div class="spinner-border" role="status">
-                              <span class="sr-only">Loading...</span>
+                                <span class="sr-only">Loading...</span>
                             </div>
-                          </div>
+                        </div>
                         <div class="list-group rounded-0" id="conversationsWindow">
                         </div>
                     </div>
@@ -39,14 +41,14 @@
             <div class="col-7 px-0">
                 <div class="d-flex justify-content-center" id="messagesLoading">
                     <div class="spinner-border" role="status">
-                      <span class="sr-only">Loading...</span>
+                        <span class="sr-only">Loading...</span>
                     </div>
-                  </div>
+                </div>
                 <div class="px-4 py-5 chat-box bg-white" id="chatWindow">
-              
+
                 </div>
                 <div id="emojiModal">
-                    <h6>Choose an Emoji</h6>     <button onclick="closeEmojiModal()">Close</button>
+                    <h6>Choose an Emoji</h6> <button onclick="closeEmojiModal()">Close</button>
                     <div class="row">
                         <div class="col">
                             <div class="emoji" onclick="insertEmoji('😀')">😀</div>
@@ -55,30 +57,30 @@
                             <div class="emoji" onclick="insertEmoji('🥰')">🥰</div>
                         </div>
                         <div class="col">
-                                  
-                    <div class="emoji" onclick="insertEmoji('😎')">😎</div>
-                    <div class="emoji" onclick="insertEmoji('😀')">😀</div>
-                    <div class="emoji" onclick="insertEmoji('😄')">😄</div>
-                    <div class="emoji" onclick="insertEmoji('😊')">😊</div>
+
+                            <div class="emoji" onclick="insertEmoji('😎')">😎</div>
+                            <div class="emoji" onclick="insertEmoji('😀')">😀</div>
+                            <div class="emoji" onclick="insertEmoji('😄')">😄</div>
+                            <div class="emoji" onclick="insertEmoji('😊')">😊</div>
                         </div>
                         <div class="col">
                             <div class="emoji" onclick="insertEmoji('🥰')">🥰</div>
                             <div class="emoji" onclick="insertEmoji('😎')">😎</div>
                         </div>
                     </div>
-    
+
 
                     <!-- Add more emoji divs here -->
-               
+
                 </div>
                 <div class="input-group">
                     <input type="text" id="message" placeholder="Type a message " aria-describedby="button-addon2"
                         class="form-control rounded-0 border-0 py-4 bg-light">
-                   
+
                     <div class="input-group-append" style="background: white;">
 
                         <button id="button-emoji" type="submit" class="btn btn-link" onclick="showEmojiContainer()"> <i
-                            class="fa  fa-smile-o"></i></button>
+                                class="fa  fa-smile-o"></i></button>
                         <button id="button-addon2" type="submit" class="btn btn-link" onclick="sendMessage()"> <i
                                 class="fa fa-paper-plane"></i></button>
                     </div>
@@ -94,7 +96,7 @@
     <script src="/public/chat.js">  </script>
     <script>
 
-const emojiModal = document.getElementById('emojiModal');
+        const emojiModal = document.getElementById('emojiModal');
         const emojiButton = document.getElementById('emojiButton');
         const emojiText = document.getElementById('emojiText');
 
@@ -120,9 +122,9 @@ const emojiModal = document.getElementById('emojiModal');
             fetch("/users/search", {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json", 
+                    "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ query: searchQuery }), 
+                body: JSON.stringify({ query: searchQuery }),
             })
                 .then((response) => {
                     if (!response.ok) {
@@ -134,9 +136,9 @@ const emojiModal = document.getElementById('emojiModal');
                     userLoading.style.visibility = "hidden";
                     conversationsWindow.innerHTML = "";
                     data.users.forEach(user => {
-                conversationsWindow.insertAdjacentHTML('beforeend', renderUser(user.username));
+                        conversationsWindow.insertAdjacentHTML('beforeend', renderUser(user.username));
 
-            });
+                    });
                 })
                 .catch((error) => {
                     console.error("Fetch error:", error);

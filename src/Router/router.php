@@ -2,6 +2,8 @@
 
 namespace App\Router;
 
+use App\Controllers\AdminController;
+use App\Controllers\ApiController;
 use App\Controllers\AuthController;
 use App\Controllers\ChatController;
 use App\Controllers\ConversationController;
@@ -75,6 +77,20 @@ class Router implements I_Router
             case 'logout':
                 AuthController::logout();
                 break;
+
+            case 'admin/index':
+
+                AdminController::index();
+                break;
+
+            case 'admin/logs':
+
+                AdminController::logs();
+                break;
+            case 'admin/users':
+
+                AdminController::users();
+                break;
             case 'chat/index':
                 ChatController::index();
                 break;
@@ -90,6 +106,10 @@ class Router implements I_Router
 
             case 'users':
                 UserController::read();
+                break;
+
+            case 'api/users':
+                ApiController::users();
                 break;
             case 'conversations/read':
                 ConversationController::read($matches['hash']);
@@ -121,7 +141,6 @@ class Router implements I_Router
             case 'user/create':
                 UserController::create(JSON::read());
                 break;
-
             case 'messages/new':
                 MessageController::create(JSON::read());
                 break;
@@ -131,9 +150,9 @@ class Router implements I_Router
             case 'users/search':
                 UserController::search(JSON::read()["query"]);
                 break;
-                case 'settings/password':
-                    SettingsController::changePassword(JSON::read());
-                    break;
+            case 'settings/password':
+                SettingsController::changePassword(JSON::read());
+                break;
             case 'upload/image':
                 try {
                     $profilePicture = new Upload();

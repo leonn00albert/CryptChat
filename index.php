@@ -11,6 +11,11 @@ Router::get('/logout', 'logout');
 Router::get('/register', 'register');
 Router::get('/', 'home');
 Router::post('/auth/login', 'auth/login');
+Router::get('/admin', 'admin/index'); // move later
+Router::get('/admin/users', 'admin/users'); // move later
+Router::get('/admin/logs', 'admin/logs'); // move later
+Router::get('/api/users', 'api/users');// move later
+
 
 if (isset($_SESSION["auth"]) && $_SESSION["auth"]) {
     Router::get('/chat', 'chat/index');
@@ -30,6 +35,13 @@ if (isset($_SESSION["auth"]) && $_SESSION["auth"]) {
     Router::post("/settings/password", "settings/password");
 
 }
+
+if (isset($_SESSION["user_type"]) && $_SESSION["user_type"] == "admin") {
+    Router::get('/admin', 'admin/index');
+
+
+}
+
 
 
 Router::start();

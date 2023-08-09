@@ -6,7 +6,9 @@ session_start();
 require_once __DIR__ . '/vendor/autoload.php';
 
 use App\Router\Router;
+use App\Utils\HttpLogger;
 
+HttpLogger::logRequest();
 Router::get('/login', 'home/login');
 Router::get('/logout', 'home/logout');
 Router::get('/register', 'home/register');
@@ -18,6 +20,7 @@ Router::get('/admin/users/{id}/delete', 'admin/users/delete'); // move later
 Router::get('/admin/users', 'admin/users'); // move later
 Router::get('/admin/logs', 'admin/logs'); // move later
 Router::get('/api/users', 'api/users'); // move later
+Router::get('/api/httplogs', 'api/httplogs'); // move later
 Router::get('/api/users/{id}', 'api/users/id'); // move later
 Router::post('/api/users/{id}/update', 'api/users/update'); // move later
 Router::get('/api/messages', 'api/messages'); // move later

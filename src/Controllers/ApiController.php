@@ -67,4 +67,32 @@ class ApiController
             JSON::response(JSON::HTTP_BAD_REQUEST, 'error', $e->getMessage());
         }
     }
+
+    public static function httpLogs(): void
+    {
+        $logFileName =  __DIR__ . '/../../request_log.txt';
+        $logLines = file($logFileName, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+
+        $logArray = [];
+
+        foreach ($logLines as $logEntry) {
+            $logParts = explode(' | ', $logEntry);
+
+            $logArray[] = [
+                'timestamp' => $logParts[0],
+                'request_method' => $logParts[1],
+                'request_uri' => $logParts[2],
+                'remote_addr' => $logParts[3]
+            ];
+        }
+        try {
+            echo json_encode(
+                [
+                    'logs' => $logArray,
+                ]
+            );
+        } catch (AuthException | Exception $e) {
+            JSON::response(JSON::HTTP_BAD_REQUEST, 'error', $e->getMessage());
+        }
+    }
 }

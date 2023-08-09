@@ -1,3 +1,4 @@
 vendor
 .env
 .idea
+request_log.txt

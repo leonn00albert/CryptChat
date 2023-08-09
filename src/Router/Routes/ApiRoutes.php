@@ -17,6 +17,7 @@ final class ApiRoutes
             'api/messages' => ApiController::messages(),
             'api/users/id' => ApiController::userFindById($matches["id"]),
             'api/httplogs' => ApiController::httpLogs(),
+            'api/websocketlogs' => ApiController::websocketLogs(),
             default => HomeController::pageNotFound()
         };
       

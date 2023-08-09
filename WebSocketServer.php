@@ -13,25 +13,34 @@ class SubscriptionServer implements MessageComponentInterface
     protected $users = [];
     public function onOpen(ConnectionInterface $conn)
     {
-        echo "New connection! ({$conn->resourceId})\n";
+        $msg = "New connection! ({$conn->resourceId})\n";
+        $this->logRequest($msg);
+        echo  $msg;
     }
 
     public function onClose(ConnectionInterface $conn)
     {
-        echo "Connection {$conn->resourceId} has disconnected\n";
+        $msg = "Connection {$conn->resourceId} has disconnected\n";
         $this->unsubscribe($conn);
+        $this->logRequest($msg);
+        echo  $msg;
     }
 
     public function onError(ConnectionInterface $conn, \Exception $e)
     {
-        echo "An error has occurred: {$e->getMessage()}\n";
+
         $conn->close();
+        $msg ="An error has occurred: {$e->getMessage()}\n";
+        $this->logRequest($msg);
+        echo  $msg;
     }
 
     public function register(ConnectionInterface $conn, string $username)
     {
         $this->users[$username] = $conn;
-        echo "New register : " . $username;
+        $msg = "New register : " . $username;
+        $this->logRequest($msg);
+        echo  $msg;
     }
 
     public function sendToUser(ConnectionInterface $conn, string $username, array $message)
@@ -90,7 +99,9 @@ class SubscriptionServer implements MessageComponentInterface
         }
 
         $this->subscribers[$channel][$conn->resourceId] = $conn;
-        echo "Subscribed {$conn->resourceId} to channel '{$channel}'\n";
+        $msg = "Subscribed {$conn->resourceId} to channel '{$channel}'\n";
+        $this->logRequest($msg);
+        echo $msg;
     }
 
     public function unsubscribe(ConnectionInterface $conn, $channel = null)
@@ -116,6 +127,14 @@ class SubscriptionServer implements MessageComponentInterface
                 $conn->send(json_encode($message));
             }
         }
+    }
+
+    protected function logRequest($logEntry)
+    {
+        $logFile =  __DIR__ . '/websocket_log.txt';
+        $timestamp = date('Y-m-d H:i:s');
+        $logEntry = "$timestamp | $logEntry" . PHP_EOL;
+        file_put_contents($logFile, $logEntry, FILE_APPEND);
     }
 }
 

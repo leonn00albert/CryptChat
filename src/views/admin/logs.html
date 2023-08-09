@@ -42,8 +42,18 @@
                             <div class="card-header">
                                Websocket Server
                             </div>
-                            <div class="card-body">
-                                <!-- Order list here -->
+                            <div class="card-body" style="overflow: scroll; height: 600px; ">
+                                <table class="table" id="websocketLogsTable">
+                                    <thead>
+                                        <tr>
+                                            <th>timestamp</th>
+                                            <th>message</th>
+                                
+                                        </tr>
+                                    </thead>
+                                    <tbody id="userTableBody">
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -52,7 +62,7 @@
                             <div class="card-header">
                                HTTP server
                             </div>
-                            <div class="card-body">
+                            <div class="card-body" style="overflow: scroll; height: 600px; ">
                                 <table class="table" id="httpLogsTable">
                                     <thead>
                                         <tr>
@@ -77,7 +87,7 @@
             const response = await fetch('/api/httplogs');
             const data = await response.json();
             const userTableBody = document.getElementById('httpLogsTable');
-            data.logs.forEach(log => {
+            data.logs.reverse().forEach(log => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${log.timestamp}</td>
@@ -88,7 +98,22 @@
                 userTableBody.appendChild(row);
             });
         }
+        async function fetchWebsocketLogs() {
+            const response = await fetch('/api/websocketlogs');
+            const data = await response.json();
+            const userTableBody = document.getElementById('websocketLogsTable');
+            data.logs.reverse().forEach(log => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${log.timestamp}</td>
+                    <td>${log.message}</td>
+   
+                `;
+                userTableBody.appendChild(row);
+            });
+        }
 
+        fetchWebsocketLogs()
         fetchHttpLogs();
 </script>
     <!-- Include Bootstrap JS and Popper.js -->

@@ -21,6 +21,7 @@ Router::get('/admin/users', 'admin/users'); // move later
 Router::get('/admin/logs', 'admin/logs'); // move later
 Router::get('/api/users', 'api/users'); // move later
 Router::get('/api/httplogs', 'api/httplogs'); // move later
+Router::get('/api/websocketlogs', 'api/websocketlogs'); // move later
 Router::get('/api/users/{id}', 'api/users/id'); // move later
 Router::post('/api/users/{id}/update', 'api/users/update'); // move later
 Router::get('/api/messages', 'api/messages'); // move later

@@ -11,12 +11,18 @@ use PDOException;
 
 abstract class A_Model implements I_Model
 {
-    public static function find(int $id): array
+    public static function find(int $id, $column=null): array
     {
         $classname = explode('\\', static::class);
         $db = DB::getInstance();
         try {
-            $stmt = $db->prepare('SELECT * FROM ' . lcfirst(end($classname)) . 's WHERE id = :id');
+            if(isset($column)) {
+                $stmt = $db->prepare('SELECT ' .  $column . ' FROM ' . lcfirst(end($classname)) . 's WHERE id = :id');
+
+            } else {
+                $stmt = $db->prepare('SELECT * FROM ' . lcfirst(end($classname)) . 's WHERE id = :id');
+
+            }
             $stmt->bindParam(':id', $id);
             $stmt->execute();
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -26,6 +32,20 @@ abstract class A_Model implements I_Model
             $_SESSION['alerts']['message'] = $e->getMessage();
             $db = null;
             return [];
+        }
+    }
+        public static function delete(int $id): void
+    {
+        $classname = explode('\\', static::class);
+        $db = DB::getInstance();
+        try {
+            $stmt = $db->prepare('DELETE FROM ' . lcfirst(end($classname)) . 's WHERE id = :id');
+            $stmt->bindParam(':id', $id);
+            $stmt->execute();
+            $db = null;
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+            $db = null;
         }
     }
 

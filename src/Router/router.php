@@ -11,6 +11,7 @@ use App\Controllers\FileController;
 use App\Controllers\HomeController;
 use App\Controllers\MessageController;
 use App\Controllers\SettingsController;
+use App\Controllers\ApiController;
 use App\Controllers\UserController;
 use App\Router\Routes\AdminRoutes;
 use App\Router\Routes\ApiRoutes;
@@ -77,8 +78,8 @@ class Router implements I_Router
 
         $action = match ($split_route) {
             'home' => HomeRoutes::get($route),
-            'admin' => AdminRoutes::get($route),
-            'api' => ApiRoutes::get($route),
+            'admin' => AdminRoutes::get($route,$matches),
+            'api' => ApiRoutes::get($route,$matches),
             'chat' => ChatRoutes::get($route, $matches),
             'settings' => ChatController::settings(),
             'conversations' => ConversationController::read($matches['hash']),
@@ -105,6 +106,7 @@ class Router implements I_Router
             'users/search' => UserController::search(JSON::read()['query']),
             'settings/password' => SettingsController::changePassword(JSON::read()),
             'upload/image' => FileController::profilePicture(),
+            'api/users/update' => ApiController::userUpdate($matches["id"], JSON::read()),
             default => HomeController::pageNotFound()
         };
     }

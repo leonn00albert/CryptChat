@@ -28,6 +28,30 @@ class ApiController
         }
     }
 
+    public static function userFindById($id): void
+    {
+        try {
+            echo json_encode(
+                User::find((int) $id, "username")
+            );
+        } catch (AuthException | Exception $e) {
+            JSON::response(JSON::HTTP_BAD_REQUEST, 'error', $e->getMessage());
+        }
+    }
+
+    public static function userUpdate($id, $data): void
+    {
+        try {
+            $username = User::find((int) $id)[0]["username"];
+            $user = User::findByUsername($username);
+            $user->username = trim(htmlspecialchars($data['username']));
+            $user->save();
+            echo json_encode(["message" => "success update"]);
+        } catch (AuthException | Exception $e) {
+            JSON::response(JSON::HTTP_BAD_REQUEST, 'error', $e->getMessage());
+        }
+    }
+
     /**
      * Get a list of all messages.
      */

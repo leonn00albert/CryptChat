@@ -66,17 +66,18 @@ class User extends A_Model implements FindableByUsername, Persistable
                 'INSERT INTO users (username, password, public_key, private_key) 
             VALUES (:username, :password, :publicKey, :privateKey)'
             );
+            $stmt->bindParam(':password', $this->password);
+            $stmt->bindParam(':publicKey', $this->publicKey);
+            $stmt->bindParam(':privateKey', $this->privateKey);
         } else {
             $stmt = $db->prepare(
-                'UPDATE users 
-                                  SET password = :password, public_key = :publicKey, private_key = :privateKey
-                                  WHERE username = :username'
+                'UPDATE users SET username = :username WHERE id = :id'
             );
+            $stmt->bindParam(':id', $this->id);
         }
+
         $stmt->bindParam(':username', $this->username);
-        $stmt->bindParam(':password', $this->password);
-        $stmt->bindParam(':publicKey', $this->publicKey);
-        $stmt->bindParam(':privateKey', $this->privateKey);
+
 
         $stmt->execute();
         $db = null;

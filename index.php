@@ -13,11 +13,14 @@ Router::get('/register', 'home/register');
 Router::get('/', 'home/index');
 Router::post('/auth/login', 'auth/login');
 Router::get('/admin', 'admin/index'); // move later
+Router::get('/admin/users/{id}/edit', 'admin/users/edit'); // move later
+Router::get('/admin/users/{id}/delete', 'admin/users/delete'); // move later
 Router::get('/admin/users', 'admin/users'); // move later
 Router::get('/admin/logs', 'admin/logs'); // move later
 Router::get('/api/users', 'api/users'); // move later
+Router::get('/api/users/{id}', 'api/users/id'); // move later
+Router::post('/api/users/{id}/update', 'api/users/update'); // move later
 Router::get('/api/messages', 'api/messages'); // move later
-
 if (isset($_SESSION['auth']) && $_SESSION['auth']) {
     Router::get('/chat', 'chat/index');
     Router::get('/settings', 'settings');

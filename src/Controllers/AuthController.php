@@ -17,6 +17,7 @@ class AuthController
                 $_SESSION["auth"] = true;
                 $_SESSION["user"] = $user;
                 $_SESSION["username"] = $data["username"];
+                $_SESSION["user_type"] = $data["username"] === "admin" ? "admin" : "";
                 setcookie('username', $data["username"], 0, '/chat');
                 echo json_encode(
                     [

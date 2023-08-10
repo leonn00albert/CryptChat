@@ -58,7 +58,7 @@ function extractHashFromURL() {
 }
 
 var sharedKey = null;
-ws.onmessage = (event) => {
+ws.onmessage = async (event) => {
     const data = JSON.parse(event.data);
 
     if (data.channel === "notifications") {
@@ -75,7 +75,7 @@ ws.onmessage = (event) => {
     } else {
         let own = data.username == username ? true : false;
         console.log(data.sent_at);
-        chatWindow.insertAdjacentHTML('beforeend', renderMessage(decryptMessage(data.message, sharedKey), formatCustomDate(data.sent_at), "", own));
+        chatWindow.insertAdjacentHTML('beforeend', await renderMessage(decryptMessage(data.message, sharedKey), formatCustomDate(data.sent_at), "", own));
     }
 
 
@@ -88,8 +88,8 @@ function fetchMessages() {
             messagesLoading.style.visibility = "hidden";
             chatWindow.innerHTML = "";
 
-            data.messages.forEach(message => {
-                chatWindow.insertAdjacentHTML('beforeend', renderMessage(decryptMessage(message.message_text, sharedKey), message.sent_at, message.id, message.own));
+            data.messages.forEach(async message => {
+                chatWindow.insertAdjacentHTML('beforeend', await renderMessage(decryptMessage(message.message_text, sharedKey), message.sent_at, message.id, message.own));
                 lastTimestamp = message.timestamp
             });
         })
@@ -107,12 +107,14 @@ window.onload = async function () {
     }
 };
 
-function renderUser(username) {
+ async function renderUser(username) {
     const profileImage = "/public/images/" + username + ".jpg";
+    const imageSrc = await setImageSource(profileImage);
+    console.log(imageSrc);
     const sanitizeUsername = DOMPurify.sanitize(username);
     let htmlContent = `
         <a onclick="openChat('${username}')" id="chatItem-${username}"  class="list-group-item list-group-item-action list-group-item-light rounded-0">
-                        <div class="media"><img src="${profileImage}"
+                        <div class="media"><img src="${ imageSrc}"
                                 alt="user" width="50"   height="50" class="rounded-circle">
                             <div class="media-body ml-4">
                                 <div class="d-flex align-items-center justify-content-between mb-1">
@@ -135,14 +137,14 @@ function deleteMessage(id) {
             throw error;
         });
 }
-function renderMessage(message, dateTime, id, own = false) {
+async function renderMessage(message, dateTime, id, own = false) {
     const profileImage = "/public/images/" + selectedUsername + ".jpg";
-
+    const imageSrc = await setImageSource(profileImage);
     const sanitizedMessage = DOMPurify.sanitize(message);
 
     let htmlContent = `
-        <div class="media w-50 mb-3"><img src="${profileImage}"
-        alt="user" width="50"   height="50" class="rounded-circle">
+        <div class="media w-50 mb-3"><img src="${imageSrc}"
+        alt="user" width="50"   height="50" class="profile-image rounded-circle">
             <div class="media-body ml-3">
                  <div class="bg-light rounded py-2 px-3 mb-2">
                 <p class="text-small mb-0 text-muted">${sanitizedMessage}</p>
@@ -171,6 +173,25 @@ function renderMessage(message, dateTime, id, own = false) {
     }
     return htmlContent;
 }
+
+
+const imageExists = async (url) => {
+    try {
+        const response = await fetch(url);
+        return response.ok;
+    } catch (error) {
+        return false;
+    }
+};
+
+const setImageSource = async (imageUrl) => {
+    const defaultImageUrl = "https://cdn3.iconfinder.com/data/icons/vector-icons-6/96/256-256.png";
+    
+    if (await imageExists(imageUrl)) {
+        return imageUrl;
+    }
+    return defaultImageUrl;
+};
 
 async function openChat(username) {
     document.getElementById("button-addon2").disabled = false;
@@ -225,8 +246,8 @@ async function getUsers() {
         .then(response => response.json())
         .then(data => {
             userLoading.style.visibility = "hidden";
-            data.users.forEach(user => {
-                conversationsWindow.insertAdjacentHTML('beforeend', renderUser(user.username));
+            data.users.forEach(async user => {
+                conversationsWindow.insertAdjacentHTML('beforeend', await renderUser(user.username));
 
             });
         })

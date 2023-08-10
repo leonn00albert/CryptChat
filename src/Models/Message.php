@@ -42,11 +42,7 @@ class Message extends A_Model implements FindableByConversationId , Persistable
      */
     public string $sent_at;
 
-    /**
-     * @var bool Whether the message has been read or not (true for read, false for unread).
-     *           This property is private as it should be managed internally by the class.
-     */
-    private bool $is_read = false;
+
     public function __construct( int $conversationId=null,$messageText=null,$user=null)
     {
         if(isset($conversationId) && isset($messageText)&& isset($user)) {

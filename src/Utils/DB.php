@@ -31,6 +31,8 @@ class DB
             try {
                 self::$instances[$cls] = new PDO('mysql:host=' . DatabaseConfig::SERVER_NAME . ';dbname=' . DatabaseConfig::DB_NAME, DatabaseConfig::USER_NAME, DatabaseConfig::PASSWORD);
             } catch (Exception $e) {
+                echo $e->getMessage();
+                
             }
         }
 

@@ -6,7 +6,7 @@ namespace App\Models;
 
 use App\Models\Interfaces\FindableByUsername;
 use App\Models\Interfaces\Persistable;
-use App\Utils\Auth\generateKeyPair;
+use App\Utils\Auth\GenerateKeyPair;
 use App\Utils\DB;
 use PDO;
 use PDOException;
@@ -54,7 +54,7 @@ class User extends A_Model implements FindableByUsername, Persistable
     public function save(): bool
     {
         if (is_null($this->publicKey) || is_null($this->privateKey)) {
-            $keypair = generateKeyPair::create();
+            $keypair = GenerateKeyPair::create();
             $this->publicKey = $keypair['public_key'];
             $this->privateKey = $keypair['private_key'];
         }

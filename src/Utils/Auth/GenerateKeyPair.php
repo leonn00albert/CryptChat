@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Utils\Auth;
 
-class generateKeyPair
+class GenerateKeyPair
 {
     public static function create(): array
     {

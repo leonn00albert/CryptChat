@@ -62,14 +62,14 @@ class Message extends A_Model implements FindableByConversationId , Persistable
     
         if (is_null($this->id)) {
             $stmt = $db->prepare(
-                "INSERT INTO messages (conversation_id, message_text, sent_at, is_read, username, timestamp) 
-                VALUES (:conversation_id, :message_text, :sent_at, :is_read,:username, :timestamp)"
+                "INSERT INTO messages (conversation_id, message_text, sent_at, username, timestamp) 
+                VALUES (:conversation_id, :message_text, :sent_at,:username, :timestamp)"
             );
         } else {
             $stmt = $db->prepare(
                 "UPDATE messages 
                                   SET conversation_id = :conversation_id,
-                                      message_text = :message_text, sent_at = :sent_at, is_read = :is_read
+                                      message_text = :message_text, sent_at = :sent_at
                                   WHERE id = :id"
             );
             $stmt->bindParam(':id', $this->id);
@@ -81,7 +81,6 @@ class Message extends A_Model implements FindableByConversationId , Persistable
         $time = time();
         $stmt->bindParam(':timestamp', $time);
         $stmt->bindParam(':username', $this->user);
-        $stmt->bindParam(':is_read', $this->is_read);
     
         $stmt->execute();
         $db = null;

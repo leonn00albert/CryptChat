@@ -42,8 +42,18 @@
                             <div class="card-header">
                                Websocket Server
                             </div>
-                            <div class="card-body">
-                                <!-- Order list here -->
+                            <div class="card-body" style="overflow: scroll; height: 600px; ">
+                                <table class="table" id="websocketLogsTable">
+                                    <thead>
+                                        <tr>
+                                            <th>timestamp</th>
+                                            <th>message</th>
+                                
+                                        </tr>
+                                    </thead>
+                                    <tbody id="userTableBody">
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -52,8 +62,19 @@
                             <div class="card-header">
                                HTTP server
                             </div>
-                            <div class="card-body">
-                                <!-- Product list here -->
+                            <div class="card-body" style="overflow: scroll; height: 600px; ">
+                                <table class="table" id="httpLogsTable">
+                                    <thead>
+                                        <tr>
+                                            <th>timestamp</th>
+                                            <th>request_method</th>
+                                            <th>request_uri</th>
+                                            <th>remote_addr</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="userTableBody">
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -61,7 +82,40 @@
             </main>
         </div>
     </div>
+<script>
+            async function fetchHttpLogs() {
+            const response = await fetch('/api/httplogs');
+            const data = await response.json();
+            const userTableBody = document.getElementById('httpLogsTable');
+            data.logs.reverse().forEach(log => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${log.timestamp}</td>
+                    <td>${log.request_method}</td>
+                    <td>${log.request_uri}</td>
+                    <td>${log.remote_addr}</td>
+                `;
+                userTableBody.appendChild(row);
+            });
+        }
+        async function fetchWebsocketLogs() {
+            const response = await fetch('/api/websocketlogs');
+            const data = await response.json();
+            const userTableBody = document.getElementById('websocketLogsTable');
+            data.logs.reverse().forEach(log => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${log.timestamp}</td>
+                    <td>${log.message}</td>
+   
+                `;
+                userTableBody.appendChild(row);
+            });
+        }
 
+        fetchWebsocketLogs()
+        fetchHttpLogs();
+</script>
     <!-- Include Bootstrap JS and Popper.js -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

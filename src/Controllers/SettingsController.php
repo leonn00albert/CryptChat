@@ -10,11 +10,11 @@ use Exception;
 
 class SettingsController
 {
-/**
- * Change the user's password.
- *
- * @param array<string> $data The data for changing the password.
- */
+    /**
+     * Change the user's password.
+     *
+     * @param array<string> $data The data for changing the password.
+     */
     public static function changePassword(array $data): void
     {
         try {

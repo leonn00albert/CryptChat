@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Router;
 
+use App\Controllers\ApiController;
 use App\Controllers\AuthController;
 use App\Controllers\ChatController;
 use App\Controllers\ConversationController;
@@ -51,15 +52,15 @@ class Router implements I_Router
 
         if ($matchedRoute) {
             switch ($_SERVER['REQUEST_METHOD']) {
-                case 'GET':
-                    self::handleGetRequest($matchedRoute, $matches ?? []);
-                    break;
-                case 'POST':
-                    self::handlePostRequest($matchedRoute, $matches ?? []);
-                    break;
-                default:
-                    echo 'Invalid request method.';
-                    break;
+            case 'GET':
+                self::handleGetRequest($matchedRoute, $matches ?? []);
+                break;
+            case 'POST':
+                self::handlePostRequest($matchedRoute, $matches ?? []);
+                break;
+            default:
+                echo 'Invalid request method.';
+                break;
             }
         } else {
             echo '404 Not Found';
@@ -68,7 +69,7 @@ class Router implements I_Router
     /**
      * Handle a GET request and execute the corresponding controller action.
      *
-     * @param string $route   The matched route.
+     * @param string        $route   The matched route.
      * @param array<string> $matches The named placeholders in the route pattern.
      */
     private static function handleGetRequest(string $route, array $matches): void
@@ -77,14 +78,14 @@ class Router implements I_Router
 
         $action = match ($split_route) {
             'home' => HomeRoutes::get($route),
-            'admin' => AdminRoutes::get($route),
-            'api' => ApiRoutes::get($route),
+            'admin' => AdminRoutes::get($route, $matches),
+            'api' => ApiRoutes::get($route, $matches),
             'chat' => ChatRoutes::get($route, $matches),
             'settings' => ChatController::settings(),
             'conversations' => ConversationController::read($matches['hash']),
             'users' => UserController::read(),
             'messages' => MessageController::getMessageByTimestamp($matches['hash']),
-
+            'deleteMessage' => MessageController::deleteById($matches['id']),
             default => HomeController::pageNotFound()
         };
 
@@ -93,7 +94,7 @@ class Router implements I_Router
     /**
      * Handle a POST request and execute the corresponding controller action.
      *
-     * @param string $route   The matched route.
+     * @param string        $route   The matched route.
      * @param array<string> $matches The named placeholders in the route pattern.
      */
     private static function handlePostRequest(string $route, array $matches): void
@@ -105,6 +106,7 @@ class Router implements I_Router
             'users/search' => UserController::search(JSON::read()['query']),
             'settings/password' => SettingsController::changePassword(JSON::read()),
             'upload/image' => FileController::profilePicture(),
+            'api/users/update' => ApiController::userUpdate($matches['id'], JSON::read()),
             default => HomeController::pageNotFound()
         };
     }

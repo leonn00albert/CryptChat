@@ -9,24 +9,24 @@ use App\Models\User_Conversation;
 
 class Authentication
 {
-/**
- * Checks if the user is logged in and has an active session.
- *
- * @throws AuthException If the user is not logged in.
- */
+    /**
+     * Checks if the user is logged in and has an active session.
+     *
+     * @throws AuthException If the user is not logged in.
+     */
     public static function checkIfLoggedIn(): void
     {
         if (! isset($_SESSION['username'])) {
             throw new AuthException('Authentication required. Please log in.', 401);
         }
     }
-/**
- * Check if the current user is the specified user.
- *
- * @param int $id The user ID to compare with the current user.
- *
- * @throws AuthException If the current user is not the specified user.
- */
+    /**
+     * Check if the current user is the specified user.
+     *
+     * @param int $id The user ID to compare with the current user.
+     *
+     * @throws AuthException If the current user is not the specified user.
+     */
 
     public static function checkIfUser(int $id): void
     {
@@ -36,13 +36,13 @@ class Authentication
         }
     }
 
-/**
- * Checks if the current user is a member of the conversation.
- *
- * @param object $conversation The conversation object to check against.
- *
- * @throws AuthException If the user is not a member of the conversation.
- */
+    /**
+     * Checks if the current user is a member of the conversation.
+     *
+     * @param object $conversation The conversation object to check against.
+     *
+     * @throws AuthException If the user is not a member of the conversation.
+     */
     public static function isUserMemberOfConversation(object $conversation): void
     {
         $usersInConversation = User_Conversation::findByConversationId($conversation->id);

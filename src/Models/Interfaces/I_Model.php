@@ -11,13 +11,14 @@ interface I_Model
     /**
      * Find a record by ID.
      *
-     * @param  int $id The ID of the record to find.
+     * @param  int    $id     The ID of the record to find.
+     * @param  string $column get column of record
      *
      * @return array<mixed> Returns an associative array representing the found record, or an empty array if not found.
      *
      * @throws PDOException If there is an error executing the database query.
      */
-    public static function find(int $id): array;
+    public static function find(int $id, ?string $column = null): array;
 
     /**
      * Get all records from the table.
@@ -40,8 +41,8 @@ interface I_Model
     /**
      * Search for records in the database based on a column and a search query.
      *
-     * @param  string $column The column in the database table to search.
-     * @param  string $query  The search query to be used for the search.
+     * @param string $column The column in the database table to search.
+     * @param string $query  The search query to be used for the search.
      *
      * @return array<mixed> An array of associative arrays representing the matching records.
      * An empty array if no records are found or an error occurs.

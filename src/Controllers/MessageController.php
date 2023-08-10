@@ -37,7 +37,17 @@ class MessageController
             JSON::response(JSON::HTTP_BAD_REQUEST, 'error', $e->getMessage());
         }
     }
+    public static function deleteById($id)
+    {
+        try {
+            Authentication::checkIfLoggedIn();
+            JSON::response(JSON::HTTP_STATUS_OK, 'succes', "deleted message");
 
+            Message::delete((int) $id);
+        } catch (AuthException | Exception $e) {
+            JSON::response(JSON::HTTP_BAD_REQUEST, 'error', $e->getMessage());
+        }
+    }
     public static function getMessageByTimestamp(string $url): void
     {
         try {

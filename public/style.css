@@ -102,3 +102,7 @@ input::placeholder {
   position: relative;
   top: -20px;
 }
+
+.clickable{
+  cursor: pointer;
+}

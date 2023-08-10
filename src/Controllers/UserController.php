@@ -12,11 +12,11 @@ use Exception;
 
 class UserController
 {
-/**
- * Create a new user.
- *
- * @param array<string> $data The data for creating a user.
- */
+    /**
+     * Create a new user.
+     *
+     * @param array<string> $data The data for creating a user.
+     */
     public static function create(array $data): void
     {
         try {
@@ -32,9 +32,9 @@ class UserController
         }
     }
 
-/**
- * Retrieve a list of users (excluding the current user).
- */
+    /**
+     * Retrieve a list of users (excluding the current user).
+     */
     public static function read(): void
     {
         try {
@@ -49,11 +49,11 @@ class UserController
         }
     }
 
-/**
- * Retrieve the private key of a user.
- *
- * @param int $id The ID of the user.
- */
+    /**
+     * Retrieve the private key of a user.
+     *
+     * @param int $id The ID of the user.
+     */
     public static function key(int $id): void
     {
         try {
@@ -71,11 +71,11 @@ class UserController
         }
     }
 
-/**
- * Search for users by username.
- *
- * @param string $query The search query.
- */
+    /**
+     * Search for users by username.
+     *
+     * @param string $query The search query.
+     */
     public static function search(string $query): void
     {
         try {

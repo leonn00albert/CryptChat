@@ -3,7 +3,8 @@ namespace App\Utils;
 
 class WebSocketLogger
 {
-    static function logRequest() {
+    static function logRequest()
+    {
         $logFile =  __DIR__ . '/../../request_log.txt';
     
         $requestMethod = $_SERVER['REQUEST_METHOD'];

@@ -11,17 +11,15 @@ use PDOException;
 
 abstract class A_Model implements I_Model
 {
-    public static function find(int $id, $column=null): array
+    public static function find(int $id, $column = null): array
     {
         $classname = explode('\\', static::class);
         $db = DB::getInstance();
         try {
-            if(isset($column)) {
+            if (isset($column)) {
                 $stmt = $db->prepare('SELECT ' .  $column . ' FROM ' . lcfirst(end($classname)) . 's WHERE id = :id');
-
             } else {
                 $stmt = $db->prepare('SELECT * FROM ' . lcfirst(end($classname)) . 's WHERE id = :id');
-
             }
             $stmt->bindParam(':id', $id);
             $stmt->execute();
@@ -34,7 +32,7 @@ abstract class A_Model implements I_Model
             return [];
         }
     }
-        public static function delete(int $id): void
+    public static function delete(int $id): void
     {
         $classname = explode('\\', static::class);
         $db = DB::getInstance();

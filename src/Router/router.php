@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Router;
 
+use App\Controllers\ApiController;
 use App\Controllers\AuthController;
 use App\Controllers\ChatController;
 use App\Controllers\ConversationController;
@@ -11,7 +12,6 @@ use App\Controllers\FileController;
 use App\Controllers\HomeController;
 use App\Controllers\MessageController;
 use App\Controllers\SettingsController;
-use App\Controllers\ApiController;
 use App\Controllers\UserController;
 use App\Router\Routes\AdminRoutes;
 use App\Router\Routes\ApiRoutes;
@@ -78,14 +78,14 @@ class Router implements I_Router
 
         $action = match ($split_route) {
             'home' => HomeRoutes::get($route),
-            'admin' => AdminRoutes::get($route,$matches),
-            'api' => ApiRoutes::get($route,$matches),
+            'admin' => AdminRoutes::get($route, $matches),
+            'api' => ApiRoutes::get($route, $matches),
             'chat' => ChatRoutes::get($route, $matches),
             'settings' => ChatController::settings(),
             'conversations' => ConversationController::read($matches['hash']),
             'users' => UserController::read(),
             'messages' => MessageController::getMessageByTimestamp($matches['hash']),
-            "deleteMessage" => MessageController::deleteById($matches['id']),
+            'deleteMessage' => MessageController::deleteById($matches['id']),
             default => HomeController::pageNotFound()
         };
 
@@ -106,7 +106,7 @@ class Router implements I_Router
             'users/search' => UserController::search(JSON::read()['query']),
             'settings/password' => SettingsController::changePassword(JSON::read()),
             'upload/image' => FileController::profilePicture(),
-            'api/users/update' => ApiController::userUpdate($matches["id"], JSON::read()),
+            'api/users/update' => ApiController::userUpdate($matches['id'], JSON::read()),
             default => HomeController::pageNotFound()
         };
     }

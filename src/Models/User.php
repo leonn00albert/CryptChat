@@ -78,7 +78,6 @@ class User extends A_Model implements FindableByUsername, Persistable
 
         $stmt->bindParam(':username', $this->username);
 
-
         $stmt->execute();
         $db = null;
         return true;

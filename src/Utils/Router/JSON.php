@@ -28,8 +28,6 @@ class JSON
         http_response_code(405);
         echo json_encode(['error' => 'Invalid request method or Content-Type']);
         return [];
-
-    
     }
     /**
      * Send a JSON response with the provided data and HTTP status code.

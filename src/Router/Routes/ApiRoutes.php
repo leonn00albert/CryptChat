@@ -6,7 +6,6 @@ namespace App\Router\Routes;
 
 use App\Controllers\ApiController;
 use App\Controllers\HomeController;
-use App\Utils\Router\JSON;
 
 final class ApiRoutes
 {
@@ -15,11 +14,10 @@ final class ApiRoutes
         match ($route) {
             'api/users' => ApiController::users(),
             'api/messages' => ApiController::messages(),
-            'api/users/id' => ApiController::userFindById($matches["id"]),
+            'api/users/id' => ApiController::userFindById($matches['id']),
             'api/httplogs' => ApiController::httpLogs(),
             'api/websocketlogs' => ApiController::websocketLogs(),
             default => HomeController::pageNotFound()
         };
-      
     }
 }

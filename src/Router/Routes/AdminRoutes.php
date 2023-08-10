@@ -6,6 +6,7 @@ namespace App\Router\Routes;
 
 use App\Controllers\AdminController;
 use App\Controllers\HomeController;
+
 final class AdminRoutes
 {
     public static function get(string $route, array $matches): void
@@ -14,8 +15,8 @@ final class AdminRoutes
             'admin/index' => AdminController::index(),
             'admin/logs' => AdminController::logs(),
             'admin/users' => AdminController::users(),
-            'admin/users/edit' => AdminController::usersEdit($matches["id"]),
-            'admin/users/delete' => AdminController::usersDelete($matches["id"]),
+            'admin/users/edit' => AdminController::usersEdit($matches['id']),
+            'admin/users/delete' => AdminController::usersDelete($matches['id']),
             default => HomeController::pageNotFound()
         };
 

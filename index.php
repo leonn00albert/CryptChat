@@ -25,9 +25,11 @@ Router::get('/api/websocketlogs', 'api/websocketlogs'); // move later
 Router::get('/api/users/{id}', 'api/users/id'); // move later
 Router::post('/api/users/{id}/update', 'api/users/update'); // move later
 Router::get('/api/messages', 'api/messages'); // move later
+Router::post('/user', 'user/create');
 if (isset($_SESSION['auth']) && $_SESSION['auth']) {
     Router::get('/chat', 'chat/index');
     Router::get('/settings', 'settings');
+    Router::get('/messages/{id}/delete', 'deleteMessage');
     Router::get('/chats/{hash}', 'chat/show');
     Router::get('/new/{username}', 'chat/new');
     Router::get('/users', 'users');
@@ -37,7 +39,6 @@ if (isset($_SESSION['auth']) && $_SESSION['auth']) {
     Router::get('/message', 'message');
     Router::get('/messages/latest/{hash}', 'messages');
     Router::post('/messages', 'messages/new');
-    Router::post('/user', 'user/create');
     Router::post('/users/search', 'users/search');
     Router::post('/upload/image', 'upload/image');
     Router::post('/settings/password', 'settings/password');

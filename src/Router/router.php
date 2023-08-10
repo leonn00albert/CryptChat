@@ -85,7 +85,7 @@ class Router implements I_Router
             'conversations' => ConversationController::read($matches['hash']),
             'users' => UserController::read(),
             'messages' => MessageController::getMessageByTimestamp($matches['hash']),
-
+            "deleteMessage" => MessageController::deleteById($matches['id']),
             default => HomeController::pageNotFound()
         };
 

@@ -75,7 +75,7 @@ ws.onmessage = (event) => {
     } else {
         let own = data.username == username ? true : false;
         console.log(data.sent_at);
-        chatWindow.insertAdjacentHTML('beforeend', renderMessage(decryptMessage(data.message, sharedKey) ,formatCustomDate(data.sent_at), own));
+        chatWindow.insertAdjacentHTML('beforeend', renderMessage(decryptMessage(data.message, sharedKey) ,formatCustomDate(data.sent_at),"", own));
     }
 
 
@@ -89,8 +89,7 @@ function fetchMessages() {
             chatWindow.innerHTML = "";
 
             data.messages.forEach(message => {
-                console.log(message.sent_at);
-                chatWindow.insertAdjacentHTML('beforeend', renderMessage(decryptMessage(message.message_text, sharedKey),message.sent_at, message.own));
+                chatWindow.insertAdjacentHTML('beforeend', renderMessage(decryptMessage(message.message_text, sharedKey),message.sent_at, message.id, message.own));
                 lastTimestamp = message.timestamp
             });
         })
@@ -125,8 +124,18 @@ function renderUser(username) {
         `
     return htmlContent;
 }
-  
-function renderMessage(message,dateTime, own = false) {
+function deleteMessage(id) {
+    return fetch('/messages/'+ id + "/delete")
+    .then(response => response.json())
+    .then(data => {
+        openChat(selectedUsername);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        throw error;
+    });
+}
+function renderMessage(message,dateTime,id, own = false) {
     const profileImage = "/public/images/"+ selectedUsername + ".jpg";
 
     const sanitizedMessage = DOMPurify.sanitize(message);
@@ -150,8 +159,9 @@ function renderMessage(message,dateTime, own = false) {
         htmlContent = `
              <div class="media w-50 ml-auto mb-3">
                 <div class="media-body">
-                    <div class="bg-primary rounded py-2 px-3 mb-2">
+                    <div class="bg-primary rounded py-2 px-3 mb-2" style="display: flex;justify-content: space-between;"    > 
                         <p class="text-small mb-0 text-white">${sanitizedMessage}</p>
+                        <span onclick="deleteMessage('${id}')" class="clickable"><i class="fa fa-trash"></i></span>
                     </div>
                     <p class="small text-muted">${formatNiceDate(dateTime)}</p>
                 </div>

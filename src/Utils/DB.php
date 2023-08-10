@@ -24,7 +24,7 @@ class DB
     {
         throw new \Exception('Cannot unserialize a singleton.');
     }
-    public static function getInstance(): PDO
+    public static function getInstance()
     {
         $cls = static::class;
         if (! isset(self::$instances[$cls])) {

@@ -1,4 +1,4 @@
-const ws = new WebSocket('ws://192.168.1.101:8080');
+const ws = new WebSocket('ws://3.83.41.152:8080');
 
 
 selectedUsername = "";
@@ -34,17 +34,17 @@ function checkURLPattern() {
 
 function formatCustomDate(isoDateString) {
     const date = new Date(isoDateString);
-  
+
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const day = String(date.getDate()).padStart(2, "0");
     const hours = String(date.getHours()).padStart(2, "0");
     const minutes = String(date.getMinutes()).padStart(2, "0");
     const seconds = String(date.getSeconds()).padStart(2, "0");
-  
+
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-  }
-  
+}
+
 
 function extractHashFromURL() {
     const currentURL = window.location.pathname;
@@ -75,7 +75,7 @@ ws.onmessage = (event) => {
     } else {
         let own = data.username == username ? true : false;
         console.log(data.sent_at);
-        chatWindow.insertAdjacentHTML('beforeend', renderMessage(decryptMessage(data.message, sharedKey) ,formatCustomDate(data.sent_at),"", own));
+        chatWindow.insertAdjacentHTML('beforeend', renderMessage(decryptMessage(data.message, sharedKey), formatCustomDate(data.sent_at), "", own));
     }
 
 
@@ -89,7 +89,7 @@ function fetchMessages() {
             chatWindow.innerHTML = "";
 
             data.messages.forEach(message => {
-                chatWindow.insertAdjacentHTML('beforeend', renderMessage(decryptMessage(message.message_text, sharedKey),message.sent_at, message.id, message.own));
+                chatWindow.insertAdjacentHTML('beforeend', renderMessage(decryptMessage(message.message_text, sharedKey), message.sent_at, message.id, message.own));
                 lastTimestamp = message.timestamp
             });
         })
@@ -108,7 +108,7 @@ window.onload = async function () {
 };
 
 function renderUser(username) {
-    const profileImage = "/public/images/"+ username + ".jpg";
+    const profileImage = "/public/images/" + username + ".jpg";
     const sanitizeUsername = DOMPurify.sanitize(username);
     let htmlContent = `
         <a onclick="openChat('${username}')" id="chatItem-${username}"  class="list-group-item list-group-item-action list-group-item-light rounded-0">
@@ -125,18 +125,18 @@ function renderUser(username) {
     return htmlContent;
 }
 function deleteMessage(id) {
-    return fetch('/messages/'+ id + "/delete")
-    .then(response => response.json())
-    .then(data => {
-        openChat(selectedUsername);
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        throw error;
-    });
+    return fetch('/messages/' + id + "/delete")
+        .then(response => response.json())
+        .then(data => {
+            openChat(selectedUsername);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            throw error;
+        });
 }
-function renderMessage(message,dateTime,id, own = false) {
-    const profileImage = "/public/images/"+ selectedUsername + ".jpg";
+function renderMessage(message, dateTime, id, own = false) {
+    const profileImage = "/public/images/" + selectedUsername + ".jpg";
 
     const sanitizedMessage = DOMPurify.sanitize(message);
 
@@ -294,17 +294,16 @@ function sendMessage() {
 
 function formatNiceDate(dateString) {
     const date = new Date(dateString);
-  
+
     const options = {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "numeric",
-      minute: "numeric",
-      second: "numeric",
-      hour12: true,
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+        second: "numeric",
+        hour12: true,
     };
-  
+
     return date.toLocaleString(undefined, options);
-  }
-  
+}

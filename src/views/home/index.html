@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" href="/docs/4.0/assets/img/favicons/favicon.ico">
-
+    <link rel="manifest" href="/public/manifest.json">
     <title>CryptChat</title>
     <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/cover/">
     <link href="/public/bootstrap.min.css" rel="stylesheet">
@@ -41,7 +41,7 @@
         <footer class="mastfoot mt-auto">
             <div class="inner">
                 <p>CryptChat 2023<a>
-                 
+
             </div>
         </footer>
     </div>
@@ -54,6 +54,13 @@
     <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
     <script src="/public/popper.min.js"></script>
     <script src="/public/bootstrap.bundle.min.js"></script>
+
+    <script>
+
+       
+if ("serviceWorker" in navigator) { navigator.serviceWorker.register("/public/service-worker.js"); }
+        
+    </script>
 </body>
 
 </html>

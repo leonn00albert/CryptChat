@@ -47,6 +47,7 @@ if (isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'admin') {
     Router::get('/admin/logs', 'admin/logs');
     Router::get('/api/users', 'api/users');
     Router::get('/api/httplogs', 'api/httplogs');
+    Router::get('/api/devlogs', 'api/devlogs');
     Router::get('/api/websocketlogs', 'api/websocketlogs');
     Router::get('/api/users/{id}', 'api/users/id');
     Router::post('/api/users/{id}/update', 'api/users/update');

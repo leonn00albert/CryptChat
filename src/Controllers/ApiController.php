@@ -112,4 +112,27 @@ class ApiController
             ]
         );
     }
+
+    public static function devLogs(): void
+    {
+        $logFileName =  __DIR__ . '/../../dev_logs.txt';
+        $logLines = file($logFileName, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        $logArray = [];
+
+        foreach ($logLines as $logEntry) {
+            $logParts = explode(' | ', $logEntry);
+
+            $logArray[] = [
+                'timestamp' => $logParts[0],
+                'message' => $logParts[1],
+                'id' => $logParts[2],
+                'developer' => $logParts[3],
+            ];
+        }
+        echo json_encode(
+            [
+                'logs' => $logArray,
+            ]
+        );
+    }
 }

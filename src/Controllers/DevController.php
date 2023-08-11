@@ -20,6 +20,9 @@ class DevController
     }
 
     public static function githubWebhook($data){ 
+        if($data["ref"] == "refs/heads/main") {
+            shell_exec('/bin/bash /home/ubuntu/CryptChat/build.sh 2> deployment_log.txt');
+        }
         echo json_encode($data);
     }
 }

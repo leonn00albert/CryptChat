@@ -1,4 +1,4 @@
-const ws = new WebSocket('ws://3.83.41.152:8080');
+const ws = new WebSocket('ws://18.233.9.49:8080');
 
 
 selectedUsername = "";
@@ -280,6 +280,8 @@ function decryptMessage(message, sharedKey) {
         return null;
     }
 }
+
+const messageInput = document.getElementById("message");
 
 messageInput.addEventListener('keydown', (event) => {
     if (event.ctrlKey && event.key === 'Enter') {

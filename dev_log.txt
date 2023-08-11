@@ -4,3 +4,6 @@ fix: rename logger file name to DevLogger.php | 81e63cecbb0c77b6186612055963e2cc
 2023-08-11 16:13:20 | Merge pull request #23 from leonn00albert/dev-pipeline
 
 feat: add web ui for dev logs | 3007ea97896ae652f403f2bf941bca1af56bf9c9 | leonn00albert
+2023-08-11 16:27:12 | Merge pull request #24 from leonn00albert/dev-pipeline
+
+fix: add ev_log to git ignore | ff1badb235a617f1969ddde1541650c7551a1ea2 | leonn00albert

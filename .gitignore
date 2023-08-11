@@ -3,3 +3,4 @@ vendor
 .idea
 request_log.txt
 websocket_log.txt
+deployment_log.txt

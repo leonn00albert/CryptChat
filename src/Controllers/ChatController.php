@@ -4,7 +4,7 @@ namespace App\Controllers;
 
 use App\Models\Conversation;
 use App\Models\User;
-use App\Models\User_Conversation;
+use App\Models\User_conversation;
 use App\Utils\Auth\Authentication;
 use App\Utils\Auth\GenerateSharedKey;
 use App\Utils\Router\JSON;
@@ -53,8 +53,8 @@ class ChatController extends A_Controller
                 $conversation->hash = $conversationHashA;
                 $conversation->save();
                 $conversation = Conversation::findByHash($conversationHashA);
-                User_Conversation::create(["user_id" => $sender->id, "conversation_id" => $conversation->id]);
-                User_Conversation::create(["user_id" => $receiver->id, "conversation_id" => $conversation->id]);
+                User_conversation::create(["user_id" => $sender->id, "conversation_id" => $conversation->id]);
+                User_conversation::create(["user_id" => $receiver->id, "conversation_id" => $conversation->id]);
                 echo json_encode(
                     [
                     "hash" => $conversation->hash,

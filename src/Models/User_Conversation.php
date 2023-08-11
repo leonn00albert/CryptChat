@@ -9,7 +9,7 @@ use App\Utils\DB;
 use PDO;
 use PDOException;
 
-class User_Conversation extends A_Model implements FindableByConversationId
+class User_conversation extends A_Model implements FindableByConversationId
 {
     public ?int $user_id;
     public ?int $conversation_id;

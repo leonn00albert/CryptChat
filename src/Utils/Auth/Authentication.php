@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Utils\Auth;
 
 use App\Models\User;
-use App\Models\User_Conversation;
+use App\Models\User_conversation;
 
 class Authentication
 {
@@ -45,7 +45,7 @@ class Authentication
      */
     public static function isUserMemberOfConversation(object $conversation): void
     {
-        $usersInConversation = User_Conversation::findByConversationId($conversation->id);
+        $usersInConversation = User_conversation::findByConversationId($conversation->id);
 
         $inConversation = false;
         foreach ($usersInConversation as $user) {
@@ -56,7 +56,7 @@ class Authentication
         }
 
         if (! $inConversation) {
-       
+            throw new AuthException('You are not part of this conversation', 401);
         }
     }
 }

@@ -18,4 +18,8 @@ class DevController
         shell_exec('/bin/bash /home/ubuntu/CryptChat/build.sh 2> deployment_log.txt');
 
     }
+
+    public static function githubWebhook($data){ 
+        echo json_encode($data);
+    }
 }

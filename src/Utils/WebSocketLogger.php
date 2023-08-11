@@ -1,18 +1,13 @@
 <?php
 namespace App\Utils;
 
-class WebSocketLogger
+class DevLogger
 {
-    static function logRequest()
+    static function logRequest($message, $commitId, $author)
     {
-        $logFile =  __DIR__ . '/../../request_log.txt';
-    
-        $requestMethod = $_SERVER['REQUEST_METHOD'];
-        $requestUri = $_SERVER['REQUEST_URI'];
-        $remoteAddr = $_SERVER['REMOTE_ADDR'];
+        $logFile =  __DIR__ . '/../../dev_log.txt';
         $timestamp = date('Y-m-d H:i:s');
-    
-        $logEntry = "$timestamp | $requestMethod | $requestUri | $remoteAddr" . PHP_EOL;
+        $logEntry = "$timestamp | $message | $commitId | $author" . PHP_EOL;
     
         file_put_contents($logFile, $logEntry, FILE_APPEND);
     }

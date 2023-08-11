@@ -26,6 +26,7 @@ if (isset($_SESSION['auth']) && $_SESSION['auth']) {
     Router::get('/conversation/keys/1', 'get/key');
     Router::get('/users/keys/1', 'users/key');
     Router::get('/message', 'message');
+    Router::get('/dev/deployment/update', 'deploy');
     Router::get('/messages/latest/{hash}', 'messages');
     Router::post('/messages', 'messages/new');
     Router::post('/users/search', 'users/search');

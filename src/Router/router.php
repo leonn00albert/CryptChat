@@ -8,6 +8,7 @@ use App\Controllers\ApiController;
 use App\Controllers\AuthController;
 use App\Controllers\ChatController;
 use App\Controllers\ConversationController;
+use App\Controllers\DevController;
 use App\Controllers\FileController;
 use App\Controllers\HomeController;
 use App\Controllers\MessageController;
@@ -82,6 +83,7 @@ class Router implements I_Router
             'api' => ApiRoutes::get($route, $matches),
             'chat' => ChatRoutes::get($route, $matches),
             'settings' => ChatController::settings(),
+            'deploy' => DevController::DeployUpdate(),
             'conversations' => ConversationController::read($matches['hash']),
             'users' => UserController::read(),
             'messages' => MessageController::getMessageByTimestamp($matches['hash']),

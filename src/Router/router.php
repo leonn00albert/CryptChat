@@ -102,6 +102,7 @@ class Router implements I_Router
     private static function handlePostRequest(string $route, array $matches): void
     {
         match ($route) {
+            'webhook' => DevController::githubWebhook(JSON::read()),
             'user/create' => UserController::create(JSON::read()),
             'messages/new' => MessageController::create(JSON::read()),
             'auth/login' => AuthController::login(),

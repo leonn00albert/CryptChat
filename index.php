@@ -15,6 +15,8 @@ Router::get('/register', 'home/register');
 Router::get('/', 'home/index');
 Router::post('/auth/login', 'auth/login');
 Router::post('/user', 'user/create');
+Router::post('/dev/github/webhook', 'webhook');
+
 if (isset($_SESSION['auth']) && $_SESSION['auth']) {
     Router::get('/chat', 'chat/index');
     Router::get('/settings', 'settings');
@@ -32,9 +34,11 @@ if (isset($_SESSION['auth']) && $_SESSION['auth']) {
     Router::post('/users/search', 'users/search');
     Router::post('/upload/image', 'upload/image');
     Router::post('/settings/password', 'settings/password');
+
 }
 
 if (isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'admin') {
+    
     Router::get('/admin', 'admin/index');
     Router::get('/admin', 'admin/index');
     Router::get('/admin/users/{id}/edit', 'admin/users/edit');

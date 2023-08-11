@@ -1,4 +1,10 @@
-const ws = new WebSocket('ws://18.233.9.49:8080');
+const queryString = window.location.search;
+let ws;
+if (queryString.includes('dev')) {
+     ws = new WebSocket('ws://localhost:8080');
+} else {
+     ws = new WebSocket('ws://18.233.9.49:8080');
+}
 
 
 selectedUsername = "";
@@ -74,7 +80,6 @@ ws.onmessage = async (event) => {
         }
     } else {
         let own = data.username == username ? true : false;
-        console.log(data.sent_at);
         chatWindow.insertAdjacentHTML('beforeend', await renderMessage(decryptMessage(data.message, sharedKey), formatCustomDate(data.sent_at), "", own));
     }
 
@@ -107,14 +112,13 @@ window.onload = async function () {
     }
 };
 
- async function renderUser(username) {
+async function renderUser(username) {
     const profileImage = "/public/images/" + username + ".jpg";
     const imageSrc = await setImageSource(profileImage);
-    console.log(imageSrc);
     const sanitizeUsername = DOMPurify.sanitize(username);
     let htmlContent = `
         <a onclick="openChat('${username}')" id="chatItem-${username}"  class="list-group-item list-group-item-action list-group-item-light rounded-0">
-                        <div class="media"><img src="${ imageSrc}"
+                        <div class="media"><img src="${imageSrc}"
                                 alt="user" width="50"   height="50" class="rounded-circle">
                             <div class="media-body ml-4">
                                 <div class="d-flex align-items-center justify-content-between mb-1">
@@ -186,7 +190,7 @@ const imageExists = async (url) => {
 
 const setImageSource = async (imageUrl) => {
     const defaultImageUrl = "https://cdn3.iconfinder.com/data/icons/vector-icons-6/96/256-256.png";
-    
+
     if (await imageExists(imageUrl)) {
         return imageUrl;
     }

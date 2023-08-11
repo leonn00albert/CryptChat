@@ -280,6 +280,12 @@ function decryptMessage(message, sharedKey) {
         return null;
     }
 }
+
+messageInput.addEventListener('keydown', (event) => {
+    if (event.ctrlKey && event.key === 'Enter') {
+        sendMessage();
+    }
+});
 function sendMessage() {
     let message = document.getElementById("message").value;
     document.getElementById("message").value = "";

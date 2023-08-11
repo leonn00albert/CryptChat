@@ -56,7 +56,7 @@ class Authentication
         }
 
         if (! $inConversation) {
-            throw new AuthException('You are not authorized to send messages in this conversation.', 403);
+       
         }
     }
 }

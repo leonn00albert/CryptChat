@@ -154,13 +154,26 @@ function deleteMessage(id) {
             throw error;
         });
 }
+let cachedImageSrc = null; 
+
+async function cacheImageSource(imageSrc) {
+    if (!cachedImageSrc) {
+        const image = new Image();
+        image.src = imageSrc;
+        await image.decode(); 
+        cachedImageSrc = imageSrc;
+    }
+}
+
 async function renderMessage(message, dateTime, id, own = false) {
     const profileImage = "/public/images/" + selectedUsername + ".jpg";
+   
     const imageSrc = await setImageSource(profileImage);
+    await cacheImageSource(imageSrc);
     const sanitizedMessage = DOMPurify.sanitize(message);
 
     let htmlContent = `
-        <div class="media w-50 mb-3"><img src="${imageSrc}"
+        <div class="media w-50 mb-3"><img src="${cachedImageSrc}"
         alt="user" width="50"   height="50" class="profile-image rounded-circle">
             <div class="media-body ml-3">
                  <div class="bg-light rounded py-2 px-3 mb-2">

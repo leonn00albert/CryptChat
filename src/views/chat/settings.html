@@ -15,6 +15,10 @@
 
 <body>
     <div class="container py-5 px-4">
+        <div class="alert alert-success" role="alert" style="display: none;" id="alertSuccess">
+        </div>
+        <div class="alert alert-danger" role="alert" style="display: none;" id="alertError">
+        </div>
         <div class="row rounded-lg overflow-hidden shadow">
             <div class="col-5 px-0">
                 <div class="bg-white">
@@ -99,10 +103,14 @@
             })
                 .then(response => response.json())
                 .then(data => {
-                    console.log(data);
+                    let alert = document.getElementById("alertSuccess")
+                    alert.style.display = "block";
+                    alert.innerHTML = 'Changed password' ; 
                 })
                 .catch(error => {
-                    console.error("Error:", error);
+                    let alert = document.getElementById("alertError")
+                    alert.style.display = "block";
+                    alert.innerHTML = "Error changing password ";
                 });
         });
         document.getElementById('uploadButton').addEventListener('click', () => {
@@ -122,16 +130,19 @@
             })
                 .then((response) => response.json())
                 .then((data) => {
-                    console.log('File uploaded successfully:', data);
+                    let alert = document.getElementById("alertSuccess")
+                    alert.style.display = "block";
+                    alert.innerHTML = 'File uploaded successfully' ; 
                 })
                 .catch((error) => {
-                    console.error('Error uploading file:', error);
+                    let alert = document.getElementById("alertError")
+                    alert.style.display = "block";
+                    alert.innerHTML = "Error uploading file: " + error ;
                 });
         });
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.3.2/purify.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
-    <script src="/public/chat.js">  </script>
 
 
 

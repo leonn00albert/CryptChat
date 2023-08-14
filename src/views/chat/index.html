@@ -109,7 +109,7 @@
         }
     </script>
     <script>
-        function searchUser() {
+        async function searchUser() {
             const userLoading = document.getElementById("usersLoading");
             const searchInput = document.getElementById("searchInput");
             const searchQuery = searchInput.value;
@@ -130,8 +130,8 @@
                 .then((data) => {
                     userLoading.style.visibility = "hidden";
                     conversationsWindow.innerHTML = "";
-                    data.users.forEach(user => {
-                        conversationsWindow.insertAdjacentHTML('beforeend', renderUser(user.username));
+                    data.users.forEach(async user => {
+                        conversationsWindow.insertAdjacentHTML('beforeend', await renderUser(user.username));
 
                     });
                 })

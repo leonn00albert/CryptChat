@@ -1,11 +1,12 @@
 const queryString = window.location.search;
 let ws;
+ws = new WebSocket('ws://192.168.1.101:8080');
+/*
 if (queryString.includes('dev')) {
-     ws = new WebSocket('ws://localhost:8080');
 } else {
-     ws = new WebSocket('ws://18.233.9.49:8080');
+    ws = new WebSocket('ws://18.233.9.49:8080');
 }
-
+*/
 
 selectedUsername = "";
 var lastTimestamp = 0;
@@ -66,7 +67,18 @@ function extractHashFromURL() {
 var sharedKey = null;
 ws.onmessage = async (event) => {
     const data = JSON.parse(event.data);
+    if (data.is_online) {
+        let userElement = document.getElementById("chatItem-" + data.is_online);
+        let onlineIndicator = document.createElement("span");
+        onlineIndicator.classList.add("user-online");
+        onlineIndicator.innerText = "🟢";
+        userElement.childNodes[1].prepend(onlineIndicator);
+    }
 
+    if (data.is_offline) {
+        let userElement = document.getElementById("chatItem-" + data.is_offline);
+        userElement.childNodes[1].childNodes[0].remove();
+    }
     if (data.channel === "notifications") {
         let message = JSON.parse(data.message);
         let chatItem = document.getElementById("chatItem-" + message.username);
@@ -78,19 +90,18 @@ ws.onmessage = async (event) => {
             notificationIconElement.textContent = "🔴";
             chatItem.appendChild(notificationIconElement);
         }
-    } else {
+    }
+    
+    if(data.username && data.message) {
         let own = data.username == username ? true : false;
         chatWindow.insertAdjacentHTML('beforeend', await renderMessage(decryptMessage(data.message, sharedKey), formatCustomDate(data.sent_at), "", own));
     }
-
 
 };
 function fetchMessages() {
     fetch('/messages/latest/' + currentConversation + '?timestamp=' + lastTimestamp)
         .then(response => response.json())
         .then(data => {
-            let messagesLoading = document.getElementById("messagesLoading");
-            messagesLoading.style.visibility = "hidden";
             chatWindow.innerHTML = "";
 
             data.messages.forEach(async message => {
@@ -116,6 +127,7 @@ async function renderUser(username) {
     const profileImage = "/public/images/" + username + ".jpg";
     const imageSrc = await setImageSource(profileImage);
     const sanitizeUsername = DOMPurify.sanitize(username);
+    ws.send(JSON.stringify({ action: 'is_online', username: username }));
     let htmlContent = `
         <a onclick="openChat('${username}')" id="chatItem-${username}"  class="list-group-item list-group-item-action list-group-item-light rounded-0">
                         <div class="media"><img src="${imageSrc}"
@@ -221,8 +233,8 @@ async function openChat(username) {
     const { hash, key } = await getConversationHashAndKey(username);
     currentConversation = hash;
     sharedKey = key;
-    fetchMessages();
-
+    await fetchMessages();
+    messagesLoading.style.visibility = "hidden";
     ws.send(JSON.stringify({ action: 'subscribe', channel: currentConversation }));
 
     chatItem.classList.add('active');

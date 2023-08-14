@@ -102,8 +102,6 @@ function fetchMessages() {
     fetch('/messages/latest/' + currentConversation + '?timestamp=' + lastTimestamp)
         .then(response => response.json())
         .then(data => {
-            let messagesLoading = document.getElementById("messagesLoading");
-            messagesLoading.style.visibility = "hidden";
             chatWindow.innerHTML = "";
 
             data.messages.forEach(async message => {
@@ -235,8 +233,8 @@ async function openChat(username) {
     const { hash, key } = await getConversationHashAndKey(username);
     currentConversation = hash;
     sharedKey = key;
-    fetchMessages();
-
+    await fetchMessages();
+    messagesLoading.style.visibility = "hidden";
     ws.send(JSON.stringify({ action: 'subscribe', channel: currentConversation }));
 
     chatItem.classList.add('active');

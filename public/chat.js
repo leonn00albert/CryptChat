@@ -208,13 +208,13 @@ var lastImageChecked = "";
 const imageExists = async (url) => {
     console.log(lastImageChecked);
     try {
-     
+
         if (url !== lastImageChecked) {
             lastImageChecked = url;
             const response = await fetch(url);
-            return response.ok; 
+            return response.ok;
         }
-       
+
     } catch (error) {
         return false;
     }
@@ -230,6 +230,12 @@ const setImageSource = async (imageUrl) => {
 };
 
 async function openChat(username) {
+    let users = document.getElementById("users");
+    let chats = document.getElementById("chats");
+    users.classList.add("d-none");
+    chats.classList.remove("d-none");
+
+    document.getElementById("button-emoji").disabled = false;
     document.getElementById("button-addon2").disabled = false;
     document.getElementById("button-emoji").disabled = false;
 

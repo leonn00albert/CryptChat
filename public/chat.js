@@ -92,8 +92,8 @@ ws.onmessage = async (event) => {
             chatItem.appendChild(notificationIconElement);
         }
     }
-    
-    if(data.username && data.message) {
+
+    if (data.username && data.message) {
         let own = data.username == username ? true : false;
         chatWindow.insertAdjacentHTML('beforeend', await renderMessage(decryptMessage(data.message, sharedKey), formatCustomDate(data.sent_at), "", own));
     }
@@ -154,20 +154,20 @@ function deleteMessage(id) {
             throw error;
         });
 }
-let cachedImageSrc = null; 
+let cachedImageSrc = null;
 
 async function cacheImageSource(imageSrc) {
     if (!cachedImageSrc) {
         const image = new Image();
         image.src = imageSrc;
-        await image.decode(); 
+        await image.decode();
         cachedImageSrc = imageSrc;
     }
 }
 
 async function renderMessage(message, dateTime, id, own = false) {
     const profileImage = "/public/images/" + selectedUsername + ".jpg";
-   
+
     const imageSrc = await setImageSource(profileImage);
     await cacheImageSource(imageSrc);
     const sanitizedMessage = DOMPurify.sanitize(message);
@@ -204,11 +204,14 @@ async function renderMessage(message, dateTime, id, own = false) {
     return htmlContent;
 }
 
-
+var lastImageChecked = "";
 const imageExists = async (url) => {
     try {
-        const response = await fetch(url);
-        return response.ok;
+        if (url !== lastImageChecked) {
+            const response = await fetch(url);
+            return response.ok; 
+        }
+        lastImageChecked = url;
     } catch (error) {
         return false;
     }

@@ -157,7 +157,7 @@ function deleteMessage(id) {
 let cachedImageSrc = null;
 
 async function cacheImageSource(imageSrc) {
-    if (!cachedImageSrc) {
+    if (imageSrc !== cachedImageSrc) {
         const image = new Image();
         image.src = imageSrc;
         await image.decode();
@@ -169,7 +169,7 @@ async function renderMessage(message, dateTime, id, own = false) {
     const profileImage = "/public/images/" + selectedUsername + ".jpg";
 
     const imageSrc = await setImageSource(profileImage);
-    await cacheImageSource(imageSrc);
+    await cacheImageSource(profileImage);
     const sanitizedMessage = DOMPurify.sanitize(message);
 
     let htmlContent = `
@@ -206,12 +206,15 @@ async function renderMessage(message, dateTime, id, own = false) {
 
 var lastImageChecked = "";
 const imageExists = async (url) => {
+    console.log(lastImageChecked);
     try {
+     
         if (url !== lastImageChecked) {
+            lastImageChecked = url;
             const response = await fetch(url);
             return response.ok; 
         }
-        lastImageChecked = url;
+       
     } catch (error) {
         return false;
     }

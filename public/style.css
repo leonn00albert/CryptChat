@@ -103,6 +103,13 @@ input::placeholder {
   top: -20px;
 }
 
-.clickable{
+.clickable {
   cursor: pointer;
+}
+
+.user-online {
+  position: relative;
+  left: 10px;
+  margin-left: -15px;
+  width: 15px;
 }

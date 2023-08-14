@@ -92,12 +92,14 @@
             </div>
         </div>
     </div>
-
+    <audio id="audioElement">
+        <source src="/public/alert.wav" type="audio/wav">
+        Your browser does not support the audio element.
+    </audio>
     <script src="/public/purify.min.js"></script>
     <script src="/public/crypto-js.js"></script>
     <script src="/public/chat.js">  </script>
     <script>
-
         const emojiModal = document.getElementById('emojiModal');
         const emojiButton = document.getElementById('emojiButton');
         const emojiText = document.getElementById('emojiText');

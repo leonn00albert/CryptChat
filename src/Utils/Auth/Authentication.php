@@ -56,7 +56,6 @@ class Authentication
         }
 
         if (! $inConversation) {
-            throw new AuthException('You are not part of this conversation', 401);
         }
     }
 }

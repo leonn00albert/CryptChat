@@ -5,3 +5,11 @@ RewriteBase /
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ index.php/$1 [L]
+<IfModule mod_headers.c>
+    <FilesMatch "\.(jpg|jpeg|png|gif)$">
+        Header set Cache-Control "max-age=3600"
+        Header set Expires "Thu, 01 Jan 2030 00:00:00 GMT"
+        Header set ETag "abc123"
+        Header set Last-Modified "Thu, 01 Jan 2023 00:00:00 GMT"
+    </FilesMatch>
+</IfModule>

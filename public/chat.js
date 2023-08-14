@@ -1,6 +1,7 @@
 const queryString = window.location.search;
 let ws;
 ws = new WebSocket('ws://3.83.41.152:8080');
+
 /*
 if (queryString.includes('dev')) {
 } else {
@@ -98,24 +99,18 @@ ws.onmessage = async (event) => {
     }
 
 };
-async function fetchMessages() {
-    try {
-        const response = await fetch(`/messages/latest/${currentConversation}?timestamp=${lastTimestamp}`);
-        const data = await response.json();
+function fetchMessages() {
+    fetch('/messages/latest/' + currentConversation + '?timestamp=' + lastTimestamp)
+        .then(response => response.json())
+        .then(data => {
+            chatWindow.innerHTML = "";
 
-        let messagesHTML = ""; 
-
-        data.messages.forEach(message => {
-            const decryptedMessage = decryptMessage(message.message_text, sharedKey);
-            const messageHTML = renderMessage(decryptedMessage, message.sent_at, message.id, message.own);
-            messagesHTML += messageHTML; 
-            lastTimestamp = message.timestamp;
-        });
-
-        chatWindow.innerHTML = messagesHTML;
-    } catch (error) {
-        console.error('Error fetching messages:', error);
-    }
+            data.messages.forEach(async message => {
+                chatWindow.insertAdjacentHTML('beforeend', await renderMessage(decryptMessage(message.message_text, sharedKey), message.sent_at, message.id, message.own));
+                lastTimestamp = message.timestamp
+            });
+        })
+        .catch(error => console.error('Error fetching messages:', error));
 }
 window.onload = async function () {
     try {

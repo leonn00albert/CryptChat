@@ -98,18 +98,24 @@ ws.onmessage = async (event) => {
     }
 
 };
-function fetchMessages() {
-    fetch('/messages/latest/' + currentConversation + '?timestamp=' + lastTimestamp)
-        .then(response => response.json())
-        .then(data => {
-            chatWindow.innerHTML = "";
+async function fetchMessages() {
+    try {
+        const response = await fetch(`/messages/latest/${currentConversation}?timestamp=${lastTimestamp}`);
+        const data = await response.json();
 
-            data.messages.forEach(async message => {
-                chatWindow.insertAdjacentHTML('beforeend', await renderMessage(decryptMessage(message.message_text, sharedKey), message.sent_at, message.id, message.own));
-                lastTimestamp = message.timestamp
-            });
-        })
-        .catch(error => console.error('Error fetching messages:', error));
+        let messagesHTML = ""; 
+
+        data.messages.forEach(message => {
+            const decryptedMessage = decryptMessage(message.message_text, sharedKey);
+            const messageHTML = renderMessage(decryptedMessage, message.sent_at, message.id, message.own);
+            messagesHTML += messageHTML; 
+            lastTimestamp = message.timestamp;
+        });
+
+        chatWindow.innerHTML = messagesHTML;
+    } catch (error) {
+        console.error('Error fetching messages:', error);
+    }
 }
 window.onload = async function () {
     try {

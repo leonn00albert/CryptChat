@@ -68,7 +68,7 @@ function extractHashFromURL() {
 var sharedKey = null;
 ws.onmessage = async (event) => {
     const data = JSON.parse(event.data);
-    if (data.is_online) {
+    if (data.is_online && data.is_online !== username) {
         let userElement = document.getElementById("chatItem-" + data.is_online);
         let onlineIndicator = document.createElement("span");
         onlineIndicator.classList.add("user-online");
@@ -76,7 +76,7 @@ ws.onmessage = async (event) => {
         userElement.childNodes[1].prepend(onlineIndicator);
     }
 
-    if (data.is_offline) {
+    if (data.is_offline && data.is_offline !== username) {
         let userElement = document.getElementById("chatItem-" + data.is_offline);
         userElement.childNodes[1].childNodes[0].remove();
     }
@@ -86,6 +86,8 @@ ws.onmessage = async (event) => {
 
         const notificationIcon = chatItem.querySelector(".notification-icon");
         if (!notificationIcon && (currentConversation !== message.conversation_hash)) {
+            let audioElement = document.getElementById('audioElement');
+            audioElement.play();
             const notificationIconElement = document.createElement("span");
             notificationIconElement.classList.add("notification-icon");
             notificationIconElement.textContent = "🔴";

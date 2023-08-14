@@ -1,9 +1,9 @@
 const queryString = window.location.search;
 let ws;
 if (queryString.includes('dev')) {
-     ws = new WebSocket('ws://localhost:8080');
+    ws = new WebSocket('ws://localhost:8080');
 } else {
-     ws = new WebSocket('ws://18.233.9.49:8080');
+    ws = new WebSocket('ws://18.233.9.49:8080');
 }
 
 

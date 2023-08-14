@@ -7,3 +7,7 @@ feat: add web ui for dev logs | 3007ea97896ae652f403f2bf941bca1af56bf9c9 | leonn
 2023-08-11 16:27:12 | Merge pull request #24 from leonn00albert/dev-pipeline
 
 fix: add ev_log to git ignore | ff1badb235a617f1969ddde1541650c7551a1ea2 | leonn00albert
+2023-08-11 17:08:52 | Merge pull request #31 from leonn00albert/dev-pipeline
+
+fix: fix class name typo | a531b9d6f3c244af3e84fad1dcaadef36ad529f6 | leonn00albert
+2023-08-11 17:21:53 | Rename User_Conversation.php to User_conversation.php | 26349fb1ea6da515c115424402911e4ca0d6beec | leonn00albert

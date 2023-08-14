@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Utils;
 
+use App\Utils\Router\JSON;
 use Exception;
 
 /**
@@ -60,7 +61,8 @@ class Upload
         $this->isValidSize();
 
         if (move_uploaded_file($_FILES['profileImage']['tmp_name'], $this->targetFile)) {
-            echo 'The image ' . basename($_FILES['profileImage']['name']) . ' has been uploaded.';
+            JSON::response(JSON::HTTP_STATUS_OK, "success", 'The image ' . basename($_FILES['profileImage']['name']) . ' has been uploaded.');
+       
         } else {
             throw new Exception('There was an error uploading your image.');
         }

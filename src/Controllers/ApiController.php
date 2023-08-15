@@ -115,7 +115,7 @@ class ApiController
 
     public static function devLogs(): void
     {
-        $logFileName =  __DIR__ . '/../../dev_logs.txt';
+        $logFileName =  __DIR__ . '/../../dev_log.txt';
         $logLines = file($logFileName, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         $logArray = [];
 

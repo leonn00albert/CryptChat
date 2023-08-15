@@ -118,6 +118,7 @@ window.onload = async function () {
     try {
         document.getElementById("button-addon2").disabled = true;
         document.getElementById("button-emoji").disabled = true;
+        document.getElementById("button-picture").disabled = true;
         document.getElementById("message").disabled = true;
         await getUsers();
 
@@ -166,6 +167,12 @@ async function cacheImageSource(imageSrc) {
         cachedImageSrc = imageSrc;
     }
 }
+function isBase64StringLikelyImage(base64String) {
+    const possibleImageHeaders = ["data:image/jpeg", "data:image/png", "data:image/gif"];
+
+    return possibleImageHeaders.some(header => base64String.startsWith(header));
+}
+
 
 async function renderMessage(message, dateTime, id, own = false) {
     const profileImage = "/public/images/" + selectedUsername + ".jpg";
@@ -174,7 +181,11 @@ async function renderMessage(message, dateTime, id, own = false) {
     await cacheImageSource(profileImage);
     const sanitizedMessage = DOMPurify.sanitize(message);
 
-    let htmlContent = `
+
+
+    
+
+        let htmlContent = `
         <div class="media w-50 mb-3"><img src="${cachedImageSrc}"
         alt="user" width="50"   height="50" class="profile-image rounded-circle">
             <div class="media-body ml-3">
@@ -203,6 +214,20 @@ async function renderMessage(message, dateTime, id, own = false) {
         `;
 
     }
+    if(isBase64StringLikelyImage(message) === true){
+        htmlContent = `
+        <div class="media w-50 ml-auto mb-3">
+           <div class="media-body">
+               <div class="rounded py-2 px-3 mb-2" style="display: flex;justify-content: space-between;"    > 
+                   <img width="250" height="250" src ="${message}" />
+                   <span onclick="deleteMessage('${id}')" class="clickable"><i class="fa fa-trash"></i></span>
+               </div>
+               <p class="small text-muted">${formatNiceDate(dateTime)}</p>
+           </div>
+       </div>
+   `;
+    }
+
     return htmlContent;
 }
 
@@ -237,7 +262,7 @@ async function openChat(username) {
     users.classList.add("d-none");
     chats.classList.remove("d-none");
 
-    document.getElementById("button-emoji").disabled = false;
+    document.getElementById("button-picture").disabled = false;
     document.getElementById("button-addon2").disabled = false;
     document.getElementById("button-emoji").disabled = false;
 
@@ -332,9 +357,12 @@ messageInput.addEventListener('keydown', (event) => {
         sendMessage();
     }
 });
-function sendMessage() {
-    let message = document.getElementById("message").value;
-    document.getElementById("message").value = "";
+function sendMessage(message=null) {
+
+    if(message === null){
+        message = document.getElementById("message").value;
+        document.getElementById("message").value = "";
+    }
     const dataToSend = {
         conversation_hash: currentConversation,
         message: encryptMessage(message, sharedKey),

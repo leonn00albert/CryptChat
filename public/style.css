@@ -113,3 +113,7 @@ input::placeholder {
   margin-left: -15px;
   width: 15px;
 }
+
+.text-small a {
+  color: whitesmoke;
+}

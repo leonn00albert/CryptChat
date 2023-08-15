@@ -33,3 +33,5 @@ git clone https://github.com/leonn00albert/CryptChat
 cd CryptChat
 composer install
 php -S locahost:8000 
+```
+

@@ -181,7 +181,18 @@ async function renderMessage(message, dateTime, id, own = false) {
     await cacheImageSource(profileImage);
     const sanitizedMessage = DOMPurify.sanitize(message);
 
-
+    function convertTextToLinks(text) {
+        // Regular expression to match URLs
+        var urlPattern = /(http(s)?:\/\/)?(www\.)?[a-zA-Z0-9]+(\.[a-zA-Z]{2,})+(\S+)?/g;
+    
+        // Replace URLs with anchor tags
+        var replacedText = text.replace(urlPattern, function(matchedUrl) {
+            return '<a href="' + matchedUrl + '" target="_blank">' + matchedUrl + '</a>';
+        });
+    
+        return replacedText;
+    }
+    
 
     
 
@@ -190,7 +201,7 @@ async function renderMessage(message, dateTime, id, own = false) {
         alt="user" width="50"   height="50" class="profile-image rounded-circle">
             <div class="media-body ml-3">
                  <div class="bg-light rounded py-2 px-3 mb-2">
-                <p class="text-small mb-0 text-muted">${sanitizedMessage}</p>
+                <p class="text-small mb-0 text-muted">${convertTextToLinks(sanitizedMessage)}</p>
                 </div>
             <p class="small text-muted">${formatNiceDate(dateTime)}</p>
         </div>
@@ -205,7 +216,7 @@ async function renderMessage(message, dateTime, id, own = false) {
              <div class="media w-50 ml-auto mb-3">
                 <div class="media-body">
                     <div class="bg-primary rounded py-2 px-3 mb-2" style="display: flex;justify-content: space-between;"    > 
-                        <p class="text-small mb-0 text-white">${sanitizedMessage}</p>
+                        <p class="text-small mb-0 text-white">${convertTextToLinks(sanitizedMessage)}</p>
                         <span onclick="deleteMessage('${id}')" class="clickable"><i class="fa fa-trash"></i></span>
                     </div>
                     <p class="small text-muted">${formatNiceDate(dateTime)}</p>

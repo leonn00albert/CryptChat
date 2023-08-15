@@ -105,7 +105,7 @@
             const response = await fetch('/api/devlogs');
             const data = await response.json();
             const devLogsTableBody = document.getElementById('devLogsTableBody');
-            data.logs.forEach(logs => {
+            data.logs.forEach(log => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${log.timestamp}</td>

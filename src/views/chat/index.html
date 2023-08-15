@@ -10,6 +10,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="/public/bootstrap.min.css" />
     <link rel="stylesheet" href="/public/style.css" />
+    <style>
+
+    </style>
 </head>
 
 <body>
@@ -53,7 +56,6 @@
                     </div>
                 </div>
                 <div class="px-4 py-5 chat-box bg-white" id="chatWindow">
-
                 </div>
                 <div id="emojiModal">
                     <h6>Choose an Emoji</h6> <button onclick="closeEmojiModal()">Close</button>
@@ -82,7 +84,8 @@
                         class="form-control rounded-0 border-0 py-4 bg-light">
 
                     <div class="input-group-append" style="background: white;">
-
+                        <button id="button-picture" class="btn btn-link"><i class="fa  fa-picture-o"></i></button>
+                        <input type="file" id="fileInput" style="display: none;">
                         <button id="button-emoji" type="submit" class="btn btn-link" onclick="showEmojiContainer()"> <i
                                 class="fa  fa-smile-o"></i></button>
                         <button id="button-addon2" type="submit" class="btn btn-link" onclick="sendMessage()"> <i
@@ -100,6 +103,32 @@
     <script src="/public/crypto-js.js"></script>
     <script src="/public/chat.js">  </script>
     <script>
+        let buttonPicture = document.getElementById("button-picture");
+
+
+        buttonPicture.addEventListener('click', function () {
+            fileInput.click();
+        });
+
+        var fileInput = document.getElementById('fileInput');
+
+        fileInput.addEventListener('change', function () {
+            var selectedFile = fileInput.files[0];
+
+            if (selectedFile) {
+                var reader = new FileReader();
+
+                reader.onload = function (event) {
+                    var base64Data = event.target.result.split(',')[1];
+                    var mimeType = event.target.result.split(':')[1].split(';')[0];
+                    sendMessage("data:" + mimeType + ";base64," + base64Data);
+
+                };
+                reader.readAsDataURL(selectedFile);
+            } else {
+                resultDiv.innerHTML = 'Please select a file.';
+            }
+        });
         const emojiModal = document.getElementById('emojiModal');
         const emojiButton = document.getElementById('emojiButton');
         const emojiText = document.getElementById('emojiText');
